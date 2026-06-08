@@ -15,8 +15,67 @@ const viewingFinishedBoard = ref(false)
 
 // 对局结束状态变化时（新结束 / 已清空）重置查看模式
 watch(() => store.gameOver, (v) => {
-  if (!v) viewingFinishedBoard.value = false
+  if (!v) {
+    viewingFinishedBoard.value = false
+    if (store.isReplayMode) store.exitReplay()
+  }
 })
+
+// 复盘导航
+const canGoPrev = computed(() => store.canGoPrev)
+const canGoNext = computed(() => store.canGoNext)
+const replayStateLabel = computed(() => {
+  if (!store.isReplayMode) return ''
+  const states = store.boardStates
+  if (states.length === 0) return ''
+
+  // 计算主链长度
+  let cur = states.find(s => s.parent === null)
+  let mainLen = 0
+  const mainIds = new Set<string>()
+  while (cur) {
+    mainLen++
+    mainIds.add(cur.id)
+    cur = cur.mainNext ? states.find(s => s.id === cur!.mainNext) : undefined
+  }
+
+  const currentId = store.currentStateId
+  const currentState = states.find(s => s.id === currentId)
+  const isBranch = currentState ? !mainIds.has(currentState.id) : false
+
+  if (isBranch) {
+    // 在分支上：找是从哪个主链节点的分支出来的
+    const parentState = currentState?.parent
+      ? states.find(s => s.id === currentState.parent)
+      : undefined
+    let parentIdx = 1
+    let scan = states.find(s => s.parent === null)
+    while (scan && scan.id !== parentState?.id) {
+      scan = scan.mainNext ? states.find(s => s.id === scan!.mainNext) : undefined
+      if (scan) parentIdx++
+    }
+    return `${parentIdx} → 分支`
+  }
+
+  // 在主链上
+  let idx = 1
+  let scan = states.find(s => s.parent === null)
+  while (scan && scan.id !== currentId) {
+    scan = scan.mainNext ? states.find(s => s.id === scan!.mainNext) : undefined
+    if (scan) idx++
+  }
+  return `${idx} / ${mainLen}`
+})
+
+function enterReplay() {
+  viewingFinishedBoard.value = true
+  store.enterReplay()
+}
+
+function exitReplayToSettlement() {
+  store.exitReplay()
+  viewingFinishedBoard.value = false
+}
 
 // ── 屏幕中央浮动 toast（3 秒淡化，半透明，不挡棋盘） ──
 type ToastKind = 'check' | 'error' | 'info'
@@ -237,7 +296,11 @@ function backToLobby() {
           >
             <span class="clock-text">{{ remainText }}</span>
           </div>
-          <div class="clock-state">{{ isMyTurn ? '轮到你走' : '等待对手' }}</div>
+          <div class="clock-state">
+            {{ store.isReplayMode
+              ? (store.branchKingCaptured ? '将帅被吃，分支结束' : '复盘 · ' + (store.replayCurrentTurn === 'red' ? '红方走' : '黑方走'))
+              : (isMyTurn ? '轮到你走' : '等待对手') }}
+          </div>
         </div>
 
         <!-- 自己卡片 -->
@@ -432,26 +495,51 @@ function backToLobby() {
           <!-- 场景 2：还未邀请，正常按钮 -->
           <template v-else-if="!store.myRematchAsked">
             <button @click="store.requestRematch()" class="modal-btn modal-btn-primary">🔁 再来一局</button>
-            <button @click="viewingFinishedBoard = true" class="modal-btn modal-btn-secondary">🔍 查看棋局</button>
+            <button @click="enterReplay" class="modal-btn modal-btn-secondary">🔍 查看棋局</button>
             <button @click="backToLobby" class="modal-btn modal-btn-secondary">返回大厅</button>
           </template>
           <!-- 场景 3：已邀请等待 / 被拒 -->
           <template v-else>
-            <button @click="viewingFinishedBoard = true" class="modal-btn modal-btn-secondary">🔍 查看棋局</button>
+            <button @click="enterReplay" class="modal-btn modal-btn-secondary">🔍 查看棋局</button>
             <button @click="backToLobby" class="modal-btn modal-btn-secondary">返回大厅</button>
           </template>
         </div>
       </div>
     </div>
 
-    <!-- 查看棋局模式：右下角悬浮"返回结算"按钮，点击重新打开结算弹窗 -->
-    <div v-if="store.gameOver && viewingFinishedBoard" class="finished-bar">
+    <!-- 复盘模式导航栏 -->
+    <div v-if="store.gameOver && viewingFinishedBoard && store.isReplayMode" class="replay-bar">
+      <button
+        class="replay-arrow"
+        :disabled="!canGoPrev"
+        @click="store.goPrev()"
+        title="上一步"
+      >← 上一步</button>
+
+      <span class="replay-info">{{ replayStateLabel }}</span>
+
+      <button
+        class="replay-arrow"
+        :disabled="!canGoNext"
+        @click="store.goNext()"
+        title="下一步"
+      >下一步 →</button>
+
+      <span class="replay-sep">|</span>
+
+      <button @click="exitReplayToSettlement" class="replay-action-btn">返回结算</button>
+      <button @click="backToLobby" class="replay-action-btn replay-action-secondary">返回大厅</button>
+    </div>
+
+    <!-- 查看棋局模式（非复盘，仅观察终局） -->
+    <div v-if="store.gameOver && viewingFinishedBoard && !store.isReplayMode" class="finished-bar">
       <span class="finished-bar-text">
         {{ store.gameOver.winner === yourColor ? '✓ 你赢了' : (store.gameOver.winner === 'draw' ? '⚖ 和棋' : '✗ 你输了') }}
         · 原因：{{ store.gameOverReasonText }}
-        · 复盘模式
+        · 终局画面
       </span>
-      <button @click="viewingFinishedBoard = false" class="finished-bar-btn">返回结算</button>
+      <button @click="enterReplay" class="finished-bar-btn">进入复盘</button>
+      <button @click="viewingFinishedBoard = false" class="finished-bar-btn finished-bar-btn-secondary">返回结算</button>
       <button @click="backToLobby" class="finished-bar-btn finished-bar-btn-secondary">返回大厅</button>
     </div>
 
@@ -1109,6 +1197,75 @@ function backToLobby() {
 }
 .modal-btn-primary:hover {
   background: #166534;
+}
+
+/* 复盘导航栏 */
+.replay-bar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: rgba(28, 25, 23, 0.94);
+  border: 1px solid rgba(245, 158, 11, 0.55);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  z-index: 50;
+}
+.replay-arrow {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #d97706;
+  color: #fef3c7;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s, opacity 0.15s;
+}
+.replay-arrow:hover:not(:disabled) {
+  background: #b45309;
+}
+.replay-arrow:disabled {
+  background: #57534e;
+  color: #a8a29e;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.replay-info {
+  color: #fbbf24;
+  font-size: 14px;
+  font-weight: 700;
+  min-width: 60px;
+  text-align: center;
+  padding: 0 6px;
+}
+.replay-sep {
+  color: #78716c;
+  font-size: 16px;
+  margin: 0 2px;
+}
+.replay-action-btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #d97706;
+  color: #fef3c7;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s;
+}
+.replay-action-btn:hover {
+  background: #b45309;
+}
+.replay-action-secondary {
+  background: #57534e;
+}
+.replay-action-secondary:hover {
+  background: #44403c;
 }
 
 /* 查看棋局（复盘模式）悬浮条 */
