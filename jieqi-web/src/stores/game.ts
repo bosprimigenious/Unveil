@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia'
 import { ws, type WsMessage } from '../services/ws'
-import { initialJieqiBoard, type Piece, type PieceType } from '../types/chess'
-import { getMoveErrorMessage, getValidMoves, isInCheck, isCheckmate, isStalemate } from '../utils/chessRules'
+import {
+  initialJieqiBoard, type Piece, type PieceType,
+  type MoveRecord, type BoardState, type PieceStatus,
+  pieceId, nextStateId,
+} from '../types/chess'
+import { getMoveErrorMessage, getValidMoves, isInCheck, isCheckmate, isStalemate, pieceAt } from '../utils/chessRules'
 
 export type Color = 'red' | 'black'
 
@@ -160,6 +164,14 @@ export const useGameStore = defineStore('game', {
 
     // AI 对弈暂停（仅 AI 模式下可见）
     paused: false as boolean,
+
+    // ── 复盘模式 ─────────────────────────────────────────────
+    boardStates: [] as BoardState[],
+    currentStateId: '' as string,
+    isReplayMode: false as boolean,
+    replayClockValue: 0 as number, // 冻结时的 remainSeconds
+    replayCurrentTurn: null as Color | null, // 分支中当前应走子方
+    branchKingCaptured: false as boolean,    // 分支中将帅被吃，禁止继续走子
   }),
 
   getters: {
@@ -171,6 +183,7 @@ export const useGameStore = defineStore('game', {
     },
     /** 当前回合剩余秒数（轮到自己/对手都按服务端步时倒数）；游戏未开始返回 -1 */
     remainSeconds(state): number {
+      if (state.isReplayMode) return state.replayClockValue
       if (!state.gameStart || !state.turnStartedAt) return -1
       const elapsed = Math.max(0, state.nowMs - state.turnStartedAt)
       const remain = Math.max(0, state.stepTimeLimitMs - elapsed)
@@ -181,6 +194,22 @@ export const useGameStore = defineStore('game', {
     },
     gameOverReasonText(state): string {
       return gameOverReasonText(state.gameOver?.reason)
+    },
+    /** 当前复盘状态下是否可以回退 */
+    canGoPrev(state): boolean {
+      if (!state.isReplayMode) return false
+      const cur = state.boardStates.find(s => s.id === state.currentStateId)
+      return cur != null && cur.parent != null
+    },
+    /** 当前复盘状态下是否可以前进 */
+    canGoNext(state): boolean {
+      if (!state.isReplayMode) return false
+      const cur = state.boardStates.find(s => s.id === state.currentStateId)
+      return cur != null && cur.mainNext != null
+    },
+    /** 当前 BoardState 节点 */
+    currentBoardState(state): BoardState | undefined {
+      return state.boardStates.find(s => s.id === state.currentStateId)
     },
   },
 
@@ -315,6 +344,12 @@ export const useGameStore = defineStore('game', {
 
     // ── 走子相关 ─────────────────────────────────────────
     selectCell(row: number, col: number) {
+      // 复盘模式：走自由走子逻辑
+      if (this.isReplayMode) {
+        this.handleReplayCellClick(row, col)
+        return
+      }
+
       const coord = `${COLS[col]}${row}`
       const piece = this.board.find(p => p.row === row && p.col === col)
       const yourColor = this.gameStart?.yourColor
@@ -410,12 +445,14 @@ export const useGameStore = defineStore('game', {
 
     /** 重置回合计时器（轮换或新对局时调用） */
     resetTurnClock() {
+      if (this.isReplayMode) return
       this.turnStartedAt = Date.now()
       this.nowMs = Date.now()
     },
 
     /** 由 setInterval 推动 nowMs，触发倒计时响应式更新 */
     tickClock() {
+      if (this.isReplayMode) return
       this.nowMs = Date.now()
     },
 
@@ -461,7 +498,280 @@ export const useGameStore = defineStore('game', {
       this.rematchOfferFrom = ''
       this.rematchDeclinedBy = ''
       this.paused = false
+      this.boardStates = []
+      this.currentStateId = ''
+      this.isReplayMode = false
+      this.replayClockValue = 0
+      this.replayCurrentTurn = null
+      this.branchKingCaptured = false
     },
+
+    // ── 棋盘快照工具 ─────────────────────────────────────
+    /** 深拷贝棋盘数组 */
+    deepCopyBoard(board: Piece[]): Piece[] {
+      return board.map(p => ({ ...p }))
+    },
+
+    /** 记录当前棋盘快照为新的 BoardState */
+    recordBoardSnapshot(moveRecord?: MoveRecord) {
+      const parentId = this.currentStateId || null
+      const id = nextStateId()
+      const snapshot: BoardState = {
+        id,
+        board: this.deepCopyBoard(this.board),
+        parent: parentId,
+        mainNext: null,
+        branches: [],
+        moveRecord,
+      }
+      // 链接父节点的 mainNext
+      if (parentId) {
+        const parent = this.boardStates.find(s => s.id === parentId)
+        if (parent) {
+          parent.mainNext = id
+        }
+      }
+      this.boardStates.push(snapshot)
+      this.currentStateId = id
+    },
+
+    // ── 复盘导航 ─────────────────────────────────────────
+
+    /** 进入复盘模式（对局结束后可用） */
+    enterReplay() {
+      if (this.boardStates.length === 0) return
+      this.isReplayMode = true
+      this.replayClockValue = this.remainSeconds
+      this.branchKingCaptured = false
+      // 跳转到主链最新末端
+      const latest = this.findLatestMainState()
+      if (latest) {
+        this.currentStateId = latest.id
+        this.board = this.deepCopyBoard(latest.board)
+      } else {
+        this.currentStateId = this.boardStates[this.boardStates.length - 1].id
+      }
+      // 初始化走子方：与当前对局回合一致
+      this.replayCurrentTurn = this.currentTurn
+    },
+
+    /** 退出复盘模式，回到最新状态并恢复计时 */
+    exitReplay() {
+      this.isReplayMode = false
+      this.branchKingCaptured = false
+      this.replayCurrentTurn = null
+      // 恢复到主链最新状态
+      const latestMain = this.findLatestMainState()
+      if (latestMain) {
+        this.currentStateId = latestMain.id
+        this.board = this.deepCopyBoard(latestMain.board)
+      }
+      this.selectedCoord = ''
+      this.hintCoords = []
+    },
+
+    /** 沿主链找到最后一个状态 */
+    findLatestMainState(): BoardState | undefined {
+      if (this.boardStates.length === 0) return undefined
+      // 从第一个状态出发沿 mainNext 走到尽头
+      let cur = this.boardStates.find(s => s.parent === null)
+      if (!cur) cur = this.boardStates[0]
+      while (cur.mainNext) {
+        const next = this.boardStates.find(s => s.id === cur!.mainNext)
+        if (!next) break
+        cur = next
+      }
+      return cur
+    },
+
+    /** 上一步：回到父状态 */
+    goPrev() {
+      if (!this.canGoPrev) return
+      const cur = this.boardStates.find(s => s.id === this.currentStateId)
+      if (!cur || !cur.parent) return
+      const parent = this.boardStates.find(s => s.id === cur.parent)
+      if (!parent) return
+      this.currentStateId = parent.id
+      this.board = this.deepCopyBoard(parent.board)
+      this.selectedCoord = ''
+      this.hintCoords = []
+      this.lastMove = null
+      // 回到主链父状态时清除分支结束标志
+      this.branchKingCaptured = false
+      // 回退一步 = 撤销一步棋 = 轮换走子方
+      this.replayCurrentTurn = this.replayCurrentTurn === 'red' ? 'black' : 'red'
+    },
+
+    /** 下一步：沿主链前进 */
+    goNext() {
+      if (!this.canGoNext) return
+      const cur = this.boardStates.find(s => s.id === this.currentStateId)
+      if (!cur || !cur.mainNext) return
+      const next = this.boardStates.find(s => s.id === cur.mainNext)
+      if (!next) return
+      this.currentStateId = next.id
+      this.board = this.deepCopyBoard(next.board)
+      this.selectedCoord = ''
+      this.hintCoords = []
+      this.lastMove = null
+      // 主链上前进，清除分支状态
+      this.branchKingCaptured = false
+      // 前进一步 = 应用一步棋 = 轮换走子方
+      this.replayCurrentTurn = this.replayCurrentTurn === 'red' ? 'black' : 'red'
+    },
+
+    /** 复盘中的自由走子处理（轮流走子 + 将帅被吃后锁死） */
+    handleReplayCellClick(row: number, col: number) {
+      // 将帅已被吃，分支结束，只允许回退或退出
+      if (this.branchKingCaptured) {
+        this.lastError = '将帅已被吃，分支结束。请回退或退出复盘。'
+        return
+      }
+
+      const coord = `${COLS[col]}${row}`
+      const clicked = pieceAt(this.board, row, col)
+
+      // 没有选中：只能选当前走子方的棋子
+      if (!this.selectedCoord) {
+        if (!clicked) return
+        if (clicked.color !== this.replayCurrentTurn) {
+          this.lastError = clicked.color === 'red' ? '当前轮到黑方走子' : '当前轮到红方走子'
+          return
+        }
+        this.selectedCoord = coord
+        const moves = getValidMoves(this.board, clicked)
+        this.hintCoords = moves.map(m => `${COLS[m.col]}${m.row}`)
+        return
+      }
+
+      // 已选中：再次点击同格 → 取消
+      if (this.selectedCoord === coord) {
+        this.selectedCoord = ''
+        this.hintCoords = []
+        return
+      }
+
+      // 点击己方其他棋子 → 改选（同一走子方）
+      if (clicked && clicked.color === this.replayCurrentTurn) {
+        this.selectedCoord = coord
+        const moves = getValidMoves(this.board, clicked)
+        this.hintCoords = moves.map(m => `${COLS[m.col]}${m.row}`)
+        return
+      }
+
+      // 点击空格或对方棋子 → 执行自由走子
+      const fromCol = COLS.indexOf(this.selectedCoord[0])
+      const fromRow = Number(this.selectedCoord.slice(1))
+      const selected = pieceAt(this.board, fromRow, fromCol)
+
+      if (!selected) {
+        this.selectedCoord = ''
+        this.hintCoords = []
+        return
+      }
+
+      // 合法性检查
+      const targetCoord = `${COLS[col]}${row}`
+      if (!this.hintCoords.includes(targetCoord)) {
+        const err = getMoveErrorMessage(this.board, selected, row, col)
+        if (err) {
+          this.lastError = err
+          return
+        }
+      }
+
+      // 执行复盘自由走子
+      this.executeReplayMove(selected, fromRow, fromCol, row, col)
+      this.selectedCoord = ''
+      this.hintCoords = []
+    },
+
+    /**
+     * 在复盘模式下执行自由走子，创建分支状态。
+     *
+     * 规则：轮流走子、暗子移动后揭开（身份由服务端 initialBoard 下发，piece.type 已含真实身份）、
+     * 将帅被吃后分支锁死。
+     */
+    executeReplayMove(piece: Piece, fromRow: number, fromCol: number, toRow: number, toCol: number) {
+      const newBoard = this.deepCopyBoard(this.board)
+      const movedPiece = newBoard.find(p => p.row === fromRow && p.col === fromCol)
+      if (!movedPiece) return
+
+      const wasRevealed = movedPiece.revealed
+      const wasType = movedPiece.type
+      const beforeStatus: PieceStatus = movedPiece.revealed ? 'FaceUp' : 'FaceDown'
+
+      // 吃子
+      const targetIdx = newBoard.findIndex(p => p.row === toRow && p.col === toCol)
+      const captured = targetIdx >= 0 ? newBoard.splice(targetIdx, 1)[0] : null
+
+      // 移动
+      movedPiece.row = toRow
+      movedPiece.col = toCol
+
+      // 未揭开棋子移动后自动揭开（身份由服务端 initialBoard 下发，piece.type 已含真实身份）
+      if (!movedPiece.revealed) {
+        movedPiece.revealed = true
+      }
+
+      // 检查是否吃掉了将帅
+      let kingDied = false
+      if (captured && captured.type === 'king' && captured.revealed) {
+        kingDied = true
+      }
+
+      const afterStatus: PieceStatus = movedPiece.revealed ? 'FaceUp' : 'FaceDown'
+
+      // 构建 MoveRecord
+      const moveRecord: MoveRecord = {
+        player: this.replayCurrentTurn === 'red' ? 'P1' : 'P2',
+        before: {
+          pieceId: pieceId({ color: piece.color, type: wasType, revealed: wasRevealed, row: fromRow, col: fromCol }),
+          position: { row: fromRow, col: fromCol },
+          status: beforeStatus,
+        },
+        after: {
+          pieceId: pieceId(movedPiece),
+          position: { row: toRow, col: toCol },
+          status: afterStatus,
+        },
+        timestamp: Date.now(),
+      }
+
+      // 创建分支状态
+      const curState = this.boardStates.find(s => s.id === this.currentStateId)
+      const branchId = nextStateId()
+      const branchState: BoardState = {
+        id: branchId,
+        board: newBoard,
+        parent: this.currentStateId,
+        mainNext: null,
+        branches: [],
+        moveRecord,
+      }
+      this.boardStates.push(branchState)
+
+      // 将分支添加到父节点的 branches 中
+      if (curState) {
+        curState.branches.push(branchId)
+      }
+
+      // 切换到新状态
+      this.currentStateId = branchId
+      this.board = newBoard
+      this.lastMove = { from: `${'abcdefghi'[fromCol]}${fromRow}`, to: `${'abcdefghi'[toCol]}${toRow}` }
+      this.lastError = ''
+
+      // 轮流走子
+      this.replayCurrentTurn = this.replayCurrentTurn === 'red' ? 'black' : 'red'
+
+      // 将帅被吃 → 分支锁死
+      if (kingDied) {
+        this.branchKingCaptured = true
+        this.lastError = '将帅已被吃，分支结束。请使用 ← 回退或退出复盘。'
+      }
+    },
+
 
     returnToLobby() {
       // 先告诉服务端我要离开，避免下次匹配被 [3002] 已在房间中 拦截
@@ -530,6 +840,14 @@ export const useGameStore = defineStore('game', {
           this.rematchOfferFrom = ''
           this.rematchDeclinedBy = ''
           this.resetTurnClock()
+          // 记录初始棋盘快照
+          this.boardStates = []
+          this.currentStateId = ''
+          this.isReplayMode = false
+          this.replayClockValue = 0
+          this.replayCurrentTurn = null
+          this.branchKingCaptured = false
+          this.recordBoardSnapshot()
           break
 
         case 'moveResult':
@@ -698,6 +1016,9 @@ export const useGameStore = defineStore('game', {
       } else {
         this.endgameVerdict = null
       }
+
+      // 记录棋盘快照
+      this.recordBoardSnapshot()
     },
   },
 })

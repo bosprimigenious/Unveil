@@ -27,7 +27,7 @@ public final class BoardJsonMapper {
                     cell.addProperty("piece", PieceJsonMapper.toJsonName(p.getType()));
                     cell.addProperty("visible", true);
                 } else {
-                    cell.addProperty("piece", PieceJsonMapper.toJsonName(p.getVirtualType()));
+                    cell.addProperty("piece", PieceJsonMapper.toJsonName(p.getType()));
                     cell.addProperty("visible", false);
                 }
                 cells.add(cell);

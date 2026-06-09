@@ -19,6 +19,46 @@ export interface Piece {
   col: number       // 0~8, 0=列 a
 }
 
+/** 生成棋子唯一标识（color + 初始信息在快照中用于追踪同一枚棋子） */
+export function pieceId(p: Piece): string {
+  return `${p.color}-${p.type}-${p.row}-${p.col}`
+}
+
+/** 棋子状态快照的一部分 */
+export type PieceStatus = 'FaceDown' | 'FaceUp' | 'Captured'
+
+/** 每一步的移动记录 */
+export interface MoveRecord {
+  player: 'P1' | 'P2'
+  before: {
+    pieceId: string
+    position: { row: number; col: number }
+    status: PieceStatus
+  }
+  after: {
+    pieceId: string
+    position: { row: number; col: number }
+    status: PieceStatus
+  }
+  timestamp: number
+}
+
+/** 棋盘完整快照节点（树结构） */
+export interface BoardState {
+  id: string
+  board: Piece[]          // 完整棋盘快照（深拷贝）
+  parent: string | null   // 父状态 ID
+  mainNext: string | null // 主链下一状态 ID
+  branches: string[]       // 复盘时产生的分支状态 ID
+  moveRecord?: MoveRecord  // 产生该状态的走法记录
+}
+
+/** 生成唯一状态 ID */
+let stateSeq = 0
+export function nextStateId(): string {
+  return `S${++stateSeq}`
+}
+
 // 红方明子文字 / 黑方明子文字
 export const PIECE_CHAR: Record<Color, Record<PieceType, string>> = {
   red:   { king: '帅', advisor: '仕', bishop: '相', rook: '俥', knight: '傌', cannon: '炮', pawn: '兵' },
