@@ -214,6 +214,37 @@ class WsGameServerIntegrationTest {
     }
 
     @Test
+    void spectatorDisconnectDoesNotEndHumanGame() throws Exception {
+        TestWsClient p1 = connect("specRed");
+        TestWsClient p2 = connect("specBlk");
+        TestWsClient spectator = connect("specView");
+        GameStartSession session = loginMatchReadyStart(p1, p2, "specRed", "specBlk");
+        login(spectator, "specView");
+
+        JsonObject watch = new JsonObject();
+        watch.addProperty("messageType", JsonMessageTypes.WATCH);
+        watch.addProperty("roomId", session.roomId());
+        spectator.sendJson(JsonMessages.toJson(watch));
+        assertNotNull(spectator.awaitTypeObject(JsonMessageTypes.GAME_START, 5));
+
+        session.red().clearMessages();
+        session.black().clearMessages();
+        spectator.close();
+        sleep(500);
+
+        assertTrue(server.hasRoomForTest(session.roomId()));
+        assertFalse(server.isFinishedRoomForTest(session.roomId()));
+        assertNull(session.red().findLastOfType(JsonMessageTypes.GAME_OVER));
+        assertNull(session.black().findLastOfType(JsonMessageTypes.GAME_OVER));
+
+        session.red().sendJson(resign());
+        assertNotNull(session.black().awaitTypeObject(JsonMessageTypes.GAME_OVER, 5));
+
+        p1.close();
+        p2.close();
+    }
+
+    @Test
     void watchJoinsActiveGameAsObserver() throws Exception {
         TestWsClient p1 = connect("w_red");
         TestWsClient p2 = connect("w_blk");
