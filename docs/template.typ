@@ -5,14 +5,16 @@
   project: "Unveil — 揭棋对弈程序",
   course: "揭棋对弈程序设计 · 北京邮电大学",
   team: "第一组",
-  members: ("张恒基（组长）", "秦博宇", "陈艺博", "陈雨飞"),
+  members: ("张恒基（组长）", "秦博宇", "秦艺博", "陈雨飞"),
 )
 
-#let page-footer = context place(
-  bottom + center,
-  dy: -14pt,
-)[
-  #text(size: 10.5pt, fill: rgb(148, 163, 184))[#counter(page).display()]
+#let page-footer = context [
+  #place(
+    bottom + center,
+    dy: -14pt,
+  )[
+    #text(size: 10.5pt, fill: rgb(148, 163, 184))[#counter(page).display("1")]
+  ]
 ]
 
 #let setup-doc(title: "", author: ("第一组",)) = {
@@ -64,55 +66,67 @@
 
 #let cover(title: "", subtitle: "", doc-type: "技术文档") = {
   page(margin: (top: 2.2cm, bottom: 2.2cm, x: 2.8cm), numbering: none, footer: none)[
-    align(center + horizon)[
-      block(
+    #align(center + horizon)[
+      #block(
         width: 15cm,
         inset: (y: 1.1cm),
         stroke: (top: 2.5pt + rgb(26, 54, 93), bottom: 0.75pt + rgb(203, 213, 225)),
       )[
-        align(center)[
-          text(size: 10.5pt, tracking: 0.35em, fill: rgb(71, 85, 105))[大 作 业]
-          v(0.55cm)
-          text(size: 26pt, weight: "bold", fill: rgb(15, 23, 42))[揭棋对弈程序设计]
-          v(0.65cm)
-          text(size: 19pt, weight: "medium", fill: rgb(30, 64, 175))[#title]
-          v(0.35cm)
-          if subtitle != "" [
-            text(size: 13pt, fill: rgb(100, 116, 139))[#subtitle]
-            v(0.35cm)
+        #align(center)[
+          #text(size: 10.5pt, tracking: 0.35em, fill: rgb(71, 85, 105))[大 作 业]
+          #v(0.55cm)
+          #text(size: 26pt, weight: "bold", fill: rgb(15, 23, 42))[揭棋对弈程序设计]
+          #v(0.65cm)
+          #text(size: 19pt, weight: "bold", fill: rgb(30, 64, 175))[#title]
+          #v(0.35cm)
+          #if subtitle != "" [
+            #text(size: 13pt, fill: rgb(100, 116, 139))[#subtitle]
+            #v(0.35cm)
           ]
         ]
       ]
 
-      v(1.5cm)
+      #v(1.5cm)
 
-      box(
+      #box(
         width: 13cm,
         inset: (x: 1.2cm, y: 0.95cm),
         fill: rgb(248, 250, 252),
         radius: 6pt,
         stroke: 0.75pt + rgb(226, 232, 240),
       )[
-        align(center)[
-          text(size: 11pt, weight: "bold", fill: rgb(51, 65, 85))[小组成员]
-          v(0.55cm)
-          grid(
+        #align(center)[
+          #text(size: 11pt, weight: "bold", fill: rgb(51, 65, 85))[小组成员]
+          #v(0.55cm)
+          #grid(
             columns: (1fr, 1fr),
             column-gutter: 1.6cm,
             row-gutter: 0.65cm,
             align: center + horizon,
-            [text(size: 13pt, weight: "bold")[张恒基（组长）]\ text(size: 12pt, fill: rgb(100, 116, 139))[2024211301 / 2024210926]],
-            [text(size: 13pt, weight: "bold")[秦博宇]\ text(size: 12pt, fill: rgb(100, 116, 139))[2024211302 / 2024210940]],
-            [text(size: 13pt, weight: "bold")[陈艺博]\ text(size: 12pt, fill: rgb(100, 116, 139))[2024211302 / 2024210931]],
-            [text(size: 13pt, weight: "bold")[陈雨飞]\ text(size: 12pt, fill: rgb(100, 116, 139))[2024211301 / 2024210918]],
+            [
+              #text(size: 13pt, weight: "bold")[张恒基（组长）] \
+              #text(size: 12pt, fill: rgb(100, 116, 139))[2024211301 / 2024210926]
+            ],
+            [
+              #text(size: 13pt, weight: "bold")[秦博宇] \
+              #text(size: 12pt, fill: rgb(100, 116, 139))[2024211302 / 2024210940]
+            ],
+            [
+              #text(size: 13pt, weight: "bold")[陈艺博] \
+              #text(size: 12pt, fill: rgb(100, 116, 139))[2024211302 / 2024210931]
+            ],
+            [
+              #text(size: 13pt, weight: "bold")[陈雨飞] \
+              #text(size: 12pt, fill: rgb(100, 116, 139))[2024211301 / 2024210918]
+            ],
           )
         ]
       ]
 
-      v(1cm)
-      text(size: 12pt, fill: rgb(100, 116, 139))[#doc-type · 2026-06-18]
-      v(0.5cm)
-      text(size: 10.5pt, fill: rgb(148, 163, 184))[北京邮电大学 · 计算机学院]
+      #v(1cm)
+      #text(size: 12pt, fill: rgb(100, 116, 139))[#doc-type · 2026-06-18]
+      #v(0.5cm)
+      #text(size: 10.5pt, fill: rgb(148, 163, 184))[北京邮电大学 · 计算机学院]
     ]
   ]
 }

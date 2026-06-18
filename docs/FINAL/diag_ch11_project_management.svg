@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 28 920 512" font-family="'Microsoft YaHei','SimHei',sans-serif">
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#475569"/></marker>
+    <linearGradient id="lead" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FEF3C7"/><stop offset="100%" stop-color="#FDE68A"/></linearGradient>
+  </defs>
+  <rect width="920" height="540" fill="#FAFAFA"/>
+
+  <!-- team -->
+  <text x="40" y="56" font-size="13" font-weight="700" fill="#334155">团队分工（第一组）</text>
+
+  <rect x="40" y="68" width="200" height="100" rx="8" fill="url(#lead)" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="140" y="92" text-anchor="middle" font-size="12" font-weight="700" fill="#92400E">张恒基 · 组长</text>
+  <text x="140" y="112" text-anchor="middle" font-size="9.5" fill="#78350F">架构 · AI · 规则引擎</text>
+  <text x="140" y="128" text-anchor="middle" font-size="9.5" fill="#78350F">协议 · 文档 · 项目管理</text>
+  <text x="140" y="156" text-anchor="middle" font-size="9" fill="#A16207">core / ai / INTERFACE</text>
+
+  <rect x="260" y="68" width="200" height="100" rx="8" fill="#FFF" stroke="#38BDF8"/>
+  <text x="360" y="92" text-anchor="middle" font-size="12" font-weight="600" fill="#0C4A6E">秦博宇</text>
+  <text x="360" y="112" text-anchor="middle" font-size="9.5" fill="#0369A1">架构可视化 · 测试保障</text>
+  <text x="360" y="128" text-anchor="middle" font-size="9.5" fill="#0369A1">AI/Web 联调 · 服务端</text>
+  <text x="360" y="156" text-anchor="middle" font-size="9" fill="#64748B">集成测试 · verify</text>
+
+  <rect x="480" y="68" width="200" height="100" rx="8" fill="#FFF" stroke="#4ADE80"/>
+  <text x="580" y="92" text-anchor="middle" font-size="12" font-weight="600" fill="#166534">秦艺博</text>
+  <text x="580" y="112" text-anchor="middle" font-size="9.5" fill="#15803D">jieqi-web 前端</text>
+  <text x="580" y="128" text-anchor="middle" font-size="9.5" fill="#15803D">Vue3 · Canvas 棋盘</text>
+  <text x="580" y="156" text-anchor="middle" font-size="9" fill="#64748B">WS 协议联调 · 部署</text>
+
+  <rect x="700" y="68" width="200" height="100" rx="8" fill="#FFF" stroke="#A78BFA"/>
+  <text x="800" y="92" text-anchor="middle" font-size="12" font-weight="600" fill="#5B21B6">陈雨飞</text>
+  <text x="800" y="112" text-anchor="middle" font-size="9.5" fill="#6D28D9">棋谱复盘 · 聊天</text>
+  <text x="800" y="128" text-anchor="middle" font-size="9.5" fill="#6D28D9">Replay 播放器 UI</text>
+  <text x="800" y="156" text-anchor="middle" font-size="9" fill="#64748B">测试用例 · 文档同步</text>
+
+  <!-- four task books -->
+  <text x="40" y="198" font-size="13" font-weight="700" fill="#334155">四大任务书（63 项 · 全部完成）</text>
+  <rect x="40" y="210" width="840" height="130" rx="8" fill="#FFF" stroke="#E2E8F0"/>
+
+  <rect x="60" y="228" width="185" height="90" rx="6" fill="#F5F3FF" stroke="#C4B5FD"/>
+  <text x="152" y="252" text-anchor="middle" font-size="11" font-weight="700" fill="#5B21B6">suanfatasks</text>
+  <text x="152" y="270" text-anchor="middle" font-size="10" fill="#6D28D9">jieqi-ai 算法</text>
+  <text x="152" y="288" text-anchor="middle" font-size="10" fill="#64748B">18 项 · 三档 Bot + AB</text>
+  <text x="152" y="306" text-anchor="middle" font-size="9" fill="#16A34A" font-weight="700">✓ 完成</text>
+
+  <rect x="265" y="228" width="185" height="90" rx="6" fill="#EFF6FF" stroke="#93C5FD"/>
+  <text x="357" y="252" text-anchor="middle" font-size="11" font-weight="700" fill="#1D4ED8">fupantasks</text>
+  <text x="357" y="270" text-anchor="middle" font-size="10" fill="#2563EB">棋谱与复盘</text>
+  <text x="357" y="288" text-anchor="middle" font-size="10" fill="#64748B">14 项 · Timeline + JSON</text>
+  <text x="357" y="306" text-anchor="middle" font-size="9" fill="#16A34A" font-weight="700">✓ 完成</text>
+
+  <rect x="470" y="228" width="185" height="90" rx="6" fill="#F0FDF4" stroke="#86EFAC"/>
+  <text x="562" y="252" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">chanpintasks</text>
+  <text x="562" y="270" text-anchor="middle" font-size="10" fill="#15803D">产品闭环</text>
+  <text x="562" y="288" text-anchor="middle" font-size="10" fill="#64748B">16 项 · 终局/rematch/demo</text>
+  <text x="562" y="306" text-anchor="middle" font-size="9" fill="#16A34A" font-weight="700">✓ 完成</text>
+
+  <rect x="675" y="228" width="185" height="90" rx="6" fill="#FFFBEB" stroke="#FCD34D"/>
+  <text x="767" y="252" text-anchor="middle" font-size="11" font-weight="700" fill="#92400E">wendangtasks</text>
+  <text x="767" y="270" text-anchor="middle" font-size="10" fill="#B45309">文档体系</text>
+  <text x="767" y="288" text-anchor="middle" font-size="10" fill="#64748B">15 项 · 34 Typst → 33 PDF</text>
+  <text x="767" y="306" text-anchor="middle" font-size="9" fill="#16A34A" font-weight="700">✓ 完成</text>
+
+  <!-- delivery loop -->
+  <text x="40" y="368" font-size="13" font-weight="700" fill="#334155">交付验收闭环</text>
+  <rect x="40" y="378" width="840" height="130" rx="8" fill="#FFF" stroke="#E2E8F0"/>
+
+  <rect x="60" y="400" width="130" height="44" rx="6" fill="#F1F5F9" stroke="#94A3B8"/>
+  <text x="125" y="420" text-anchor="middle" font-size="10" font-weight="600">代码实现</text>
+  <text x="125" y="436" text-anchor="middle" font-size="9" fill="#64748B">feat/fix 提交</text>
+  <line x1="190" y1="422" x2="218" y2="422" stroke="#475569" marker-end="url(#a)"/>
+
+  <rect x="218" y="400" width="130" height="44" rx="6" fill="#DCFCE7" stroke="#4ADE80"/>
+  <text x="283" y="420" text-anchor="middle" font-size="10" font-weight="600">mvn test</text>
+  <text x="283" y="436" text-anchor="middle" font-size="9" fill="#64748B">142/142 通过</text>
+  <line x1="348" y1="422" x2="376" y2="422" stroke="#475569" marker-end="url(#a)"/>
+
+  <rect x="376" y="400" width="130" height="44" rx="6" fill="#E0F2FE" stroke="#38BDF8"/>
+  <text x="441" y="420" text-anchor="middle" font-size="10" font-weight="600">verify.ps1</text>
+  <text x="441" y="436" text-anchor="middle" font-size="9" fill="#64748B">compile + package</text>
+  <line x1="506" y1="422" x2="534" y2="422" stroke="#475569" marker-end="url(#a)"/>
+
+  <rect x="534" y="400" width="130" height="44" rx="6" fill="#FEF3C7" stroke="#FBBF24"/>
+  <text x="599" y="420" text-anchor="middle" font-size="10" font-weight="600">文档同步</text>
+  <text x="599" y="436" text-anchor="middle" font-size="9" fill="#64748B">INTERFACE.typ</text>
+  <line x1="664" y1="422" x2="692" y2="422" stroke="#475569" marker-end="url(#a)"/>
+
+  <rect x="692" y="400" width="130" height="44" rx="6" fill="#F5F3FF" stroke="#C4B5FD"/>
+  <text x="757" y="420" text-anchor="middle" font-size="10" font-weight="600">答辩演示</text>
+  <text x="757" y="436" text-anchor="middle" font-size="9" fill="#64748B">demo.ps1 8min</text>
+
+  <text x="460" y="478" text-anchor="middle" font-size="10" fill="#64748B">Git 规范：feat / fix / docs / refactor / test · 分支 feat/* → main · CI push/PR 自动触发</text>
+  <text x="460" y="496" text-anchor="middle" font-size="10" fill="#94A3B8">交叉验收：mvn test · verify.ps1 · compile-docs.ps1 · Web 双浏览器 · demo.ps1</text>
+</svg>

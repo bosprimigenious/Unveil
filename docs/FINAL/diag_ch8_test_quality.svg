@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 28 920 492" font-family="'Microsoft YaHei','SimHei',sans-serif">
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#475569"/></marker>
+    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FEF3C7"/><stop offset="100%" stop-color="#FDE68A"/></linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E0F2FE"/><stop offset="100%" stop-color="#BAE6FD"/></linearGradient>
+    <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E8FF"/><stop offset="100%" stop-color="#E9D5FF"/></linearGradient>
+  </defs>
+  <rect width="920" height="520" fill="#FAFAFA"/>
+
+  <!-- module bars -->
+  <text x="40" y="58" font-size="13" font-weight="700" fill="#334155">分模块用例分布（142 项 · 0 失败）</text>
+  <rect x="40" y="68" width="420" height="150" rx="8" fill="#FFF" stroke="#E2E8F0"/>
+  <text x="60" y="92" font-size="11" fill="#64748B">jieqi-core</text>
+  <rect x="140" y="78" width="280" height="22" rx="4" fill="url(#g1)" stroke="#F59E0B"/>
+  <text x="430" y="93" text-anchor="end" font-size="11" font-weight="700" fill="#92400E">89</text>
+  <text x="60" y="122" font-size="11" fill="#64748B">jieqi-server</text>
+  <rect x="140" y="108" width="116" height="22" rx="4" fill="url(#g2)" stroke="#38BDF8"/>
+  <text x="430" y="123" text-anchor="end" font-size="11" font-weight="700" fill="#0369A1">37</text>
+  <text x="60" y="152" font-size="11" fill="#64748B">jieqi-ai</text>
+  <rect x="140" y="138" width="50" height="22" rx="4" fill="url(#g3)" stroke="#A78BFA"/>
+  <text x="430" y="153" text-anchor="end" font-size="11" font-weight="700" fill="#6D28D9">16</text>
+  <text x="60" y="182" font-size="11" fill="#94A3B8">jieqi-client / jieqi-app / jieqi-web</text>
+  <rect x="140" y="168" width="8" height="22" rx="2" fill="#E2E8F0" stroke="#CBD5E1"/>
+  <text x="430" y="183" text-anchor="end" font-size="11" fill="#94A3B8">间接覆盖</text>
+  <text x="230" y="206" text-anchor="middle" font-size="10" fill="#64748B">49 个测试类 · JUnit Jupiter 5.11.4 · 无 Mockito</text>
+
+  <!-- CI pipeline -->
+  <text x="500" y="58" font-size="13" font-weight="700" fill="#334155">CI / 本地自检流水线</text>
+  <rect x="500" y="68" width="380" height="150" rx="8" fill="#FFF" stroke="#E2E8F0"/>
+  <rect x="520" y="88" width="88" height="36" rx="6" fill="#F1F5F9" stroke="#94A3B8"/>
+  <text x="564" y="110" text-anchor="middle" font-size="10.5" fill="#334155">git push</text>
+  <line x1="608" y1="106" x2="628" y2="106" stroke="#475569" marker-end="url(#a)"/>
+  <rect x="628" y="88" width="100" height="36" rx="6" fill="#E0F2FE" stroke="#38BDF8"/>
+  <text x="678" y="110" text-anchor="middle" font-size="10" fill="#0369A1">GitHub Actions</text>
+  <line x1="728" y1="106" x2="748" y2="106" stroke="#475569" marker-end="url(#a)"/>
+  <rect x="748" y="88" width="112" height="36" rx="6" fill="#DCFCE7" stroke="#4ADE80"/>
+  <text x="804" y="110" text-anchor="middle" font-size="10" fill="#166534">verify.ps1</text>
+
+  <rect x="548" y="140" width="120" height="32" rx="5" fill="#FEF3C7" stroke="#FBBF24"/>
+  <text x="608" y="160" text-anchor="middle" font-size="10" fill="#92400E">① mvn test</text>
+  <rect x="680" y="140" width="88" height="32" rx="5" fill="#FEF3C7" stroke="#FBBF24"/>
+  <text x="724" y="160" text-anchor="middle" font-size="10" fill="#92400E">② compile</text>
+  <rect x="548" y="180" width="220" height="32" rx="5" fill="#FEF3C7" stroke="#FBBF24"/>
+  <text x="658" y="200" text-anchor="middle" font-size="10" fill="#92400E">③ package Fat JAR → OK: verify passed</text>
+
+  <!-- test layers -->
+  <text x="40" y="248" font-size="13" font-weight="700" fill="#334155">三层测试策略</text>
+  <rect x="40" y="258" width="260" height="110" rx="8" fill="#FFFBEB" stroke="#FCD34D"/>
+  <text x="170" y="282" text-anchor="middle" font-size="12" font-weight="700" fill="#92400E">单元测试 · jieqi-core</text>
+  <text x="170" y="302" text-anchor="middle" font-size="10" fill="#78350F">规则 / 终局 / 棋谱 / 协议序列化</text>
+  <text x="170" y="320" text-anchor="middle" font-size="10" fill="#78350F">28 类 · 89 用例</text>
+  <text x="170" y="352" text-anchor="middle" font-size="9" fill="#A16207">RuleValidator · EndgameJudge · ReplayTimeline</text>
+
+  <rect x="330" y="258" width="260" height="110" rx="8" fill="#EFF6FF" stroke="#93C5FD"/>
+  <text x="460" y="282" text-anchor="middle" font-size="12" font-weight="700" fill="#1D4ED8">集成测试 · jieqi-server</text>
+  <text x="460" y="302" text-anchor="middle" font-size="10" fill="#1E40AF">WS 21 方法 + TCP 7 场景 + 落盘</text>
+  <text x="460" y="320" text-anchor="middle" font-size="10" fill="#1E40AF">12 类 · 37 用例</text>
+  <text x="460" y="352" text-anchor="middle" font-size="9" fill="#3B82F6">WsGameServerIntegrationTest 端到端</text>
+
+  <rect x="620" y="258" width="260" height="110" rx="8" fill="#F5F3FF" stroke="#C4B5FD"/>
+  <text x="750" y="282" text-anchor="middle" font-size="12" font-weight="700" fill="#5B21B6">算法测试 · jieqi-ai</text>
+  <text x="750" y="302" text-anchor="middle" font-size="10" fill="#4C1D95">AB 搜索 · 公平性 · Agent 编排</text>
+  <text x="750" y="320" text-anchor="middle" font-size="10" fill="#4C1D95">9 类 · 16 用例</text>
+  <text x="750" y="352" text-anchor="middle" font-size="9" fill="#7C3AED">AiFairnessTest · BoardUndoTest</text>
+
+  <!-- mapping footer -->
+  <rect x="40" y="388" width="840" height="108" rx="8" fill="#FFF" stroke="#E2E8F0"/>
+  <text x="460" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">需求验收映射（摘录）</text>
+  <text x="60" y="436" font-size="10" fill="#475569">七种走法 → BoardMakeMoveTest</text>
+  <text x="60" y="454" font-size="10" fill="#475569">暗子/强化士象 → DarkPieceRuleTest</text>
+  <text x="60" y="472" font-size="10" fill="#475569">送将/照面 → RuleEdgeCaseTest</text>
+  <text x="320" y="436" font-size="10" fill="#475569">终局判定 → EndgameJudgeTest</text>
+  <text x="320" y="454" font-size="10" fill="#475569">AI 不透视 → AiFairnessTest</text>
+  <text x="320" y="472" font-size="10" fill="#475569">WS 状态同步 → WsGameServer 37 项</text>
+  <text x="580" y="436" font-size="10" fill="#475569">复盘帧 → replayRequestReturnsFrames</text>
+  <text x="580" y="454" font-size="10" fill="#475569">非法走子拒绝 → illegalMoveRejected</text>
+  <text x="580" y="472" font-size="10" fill="#475569">65s 超时 → turnTimeoutEndsGame</text>
+</svg>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 920" font-family="'Microsoft YaHei','SimHei',sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#333"/>
+    </marker>
+    <marker id="arrow-dash" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <linearGradient id="stateGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F3EFFF"/>
+      <stop offset="100%" stop-color="#E8DEFF"/>
+    </linearGradient>
+    <style>
+      .title { font-size: 18px; font-weight: 700; fill: #222; }
+      .state { font-size: 15px; font-weight: 600; fill: #222; }
+      .trans { font-size: 11px; fill: #444; }
+      .note-title { font-size: 12px; font-weight: 700; fill: #8B6914; }
+      .note-text { font-size: 10.5px; fill: #5C4A12; }
+      .trigger { font-size: 10.5px; fill: #333; }
+      .trigger-en { font-size: 9px; fill: #666; }
+      .box-title { font-size: 12px; font-weight: 700; fill: #444; }
+    </style>
+  </defs>
+  <rect width="960" height="920" fill="#FAFAFA"/>
+  <text x="480" y="30" text-anchor="middle" class="title">房间状态机 — Created → Waiting → Playing → GameOver</text>
+
+  <!-- main flow column -->
+  <circle cx="480" cy="58" r="8" fill="#222"/>
+  <line x1="480" y1="66" x2="480" y2="88" stroke="#333" marker-end="url(#arrow)"/>
+  <text x="492" y="82" class="trans">createRoom</text>
+
+  <rect x="400" y="92" width="160" height="40" rx="20" fill="url(#stateGrad)" stroke="#7B68B8"/>
+  <text x="480" y="118" text-anchor="middle" class="state">Created</text>
+  <line x1="480" y1="132" x2="480" y2="154" stroke="#333" marker-end="url(#arrow)"/>
+  <text x="492" y="148" class="trans">首位玩家加入</text>
+
+  <rect x="400" y="158" width="160" height="40" rx="20" fill="url(#stateGrad)" stroke="#7B68B8"/>
+  <text x="480" y="184" text-anchor="middle" class="state">Waiting</text>
+  <path d="M 560 178 C 640 178, 640 210, 560 210" fill="none" stroke="#666" stroke-dasharray="4,3" marker-end="url(#arrow-dash)"/>
+  <text x="648" y="198" class="trans">加入 / 退出</text>
+  <line x1="480" y1="198" x2="480" y2="220" stroke="#333" marker-end="url(#arrow)"/>
+  <text x="492" y="214" class="trans">双方 ready</text>
+
+  <rect x="390" y="224" width="180" height="44" rx="22" fill="url(#stateGrad)" stroke="#7B68B8" stroke-width="2"/>
+  <text x="480" y="252" text-anchor="middle" class="state">Playing</text>
+
+  <!-- self loop on right, clear -->
+  <path d="M 570 246 C 700 246, 700 286, 570 286" fill="none" stroke="#333" marker-end="url(#arrow)"/>
+  <text x="708" y="270" class="trans">正常走子（未触发终局）</text>
+
+  <!-- trigger conditions box instead of 9 overlapping arrows -->
+  <line x1="480" y1="268" x2="480" y2="300" stroke="#333" marker-end="url(#arrow)"/>
+  <text x="492" y="288" class="trans">触发任一终局条件</text>
+
+  <g transform="translate(180,308)">
+    <rect x="0" y="0" width="600" height="148" rx="8" fill="#FFF" stroke="#B8A0D8" stroke-width="1.5"/>
+    <text x="300" y="22" text-anchor="middle" class="box-title">Playing → GameOver 触发条件（9 种，任一满足）</text>
+    <line x1="16" y1="30" x2="584" y2="30" stroke="#EEE"/>
+    <!-- row 1 -->
+    <rect x="16" y="40" width="180" height="30" rx="4" fill="#F8F5FF" stroke="#DDD"/>
+    <text x="106" y="54" text-anchor="middle" class="trigger">将死</text>
+    <text x="106" y="66" text-anchor="middle" class="trigger-en">checkmate</text>
+    <rect x="210" y="40" width="180" height="30" rx="4" fill="#F8F5FF" stroke="#DDD"/>
+    <text x="300" y="54" text-anchor="middle" class="trigger">困毙</text>
+    <text x="300" y="66" text-anchor="middle" class="trigger-en">stalemate</text>
+    <rect x="404" y="40" width="180" height="30" rx="4" fill="#F8F5FF" stroke="#DDD"/>
+    <text x="494" y="54" text-anchor="middle" class="trigger">65s 超时</text>
+    <text x="494" y="66" text-anchor="middle" class="trigger-en">timeout</text>
+    <!-- row 2 -->
+    <rect x="16" y="78" width="180" height="30" rx="4" fill="#F8F5FF" stroke="#DDD"/>
+    <text x="106" y="92" text-anchor="middle" class="trigger">认输</text>
+    <text x="106" y="104" text-anchor="middle" class="trigger-en">resign</text>
+    <rect x="210" y="78" width="180" height="30" rx="4" fill="#F8F5FF" stroke="#DDD"/>
+    <text x="300" y="92" text-anchor="middle" class="trigger">断线</text>
+    <text x="300" y="104" text-anchor="middle" class="trigger-en">disconnect</text>
+    <rect x="404" y="78" width="180" height="30" rx="4" fill="#F8F5FF" stroke="#DDD"/>
+    <text x="494" y="92" text-anchor="middle" class="trigger">直接吃将/帅</text>
+    <text x="494" y="104" text-anchor="middle" class="trigger-en">capture king</text>
+    <!-- row 3 -->
+    <rect x="16" y="116" width="180" height="24" rx="4" fill="#FFF8DC" stroke="#E6C84A"/>
+    <text x="106" y="132" text-anchor="middle" class="trigger">40 回合无吃子</text>
+    <rect x="210" y="116" width="180" height="24" rx="4" fill="#FFF8DC" stroke="#E6C84A"/>
+    <text x="300" y="132" text-anchor="middle" class="trigger">长将/长捉 ≥6 次</text>
+    <rect x="404" y="116" width="180" height="24" rx="4" fill="#FFF8DC" stroke="#E6C84A"/>
+    <text x="494" y="132" text-anchor="middle" class="trigger">和棋 drawAccept</text>
+  </g>
+
+  <line x1="480" y1="456" x2="480" y2="478" stroke="#333" marker-end="url(#arrow)"/>
+
+  <rect x="390" y="482" width="180" height="44" rx="22" fill="url(#stateGrad)" stroke="#7B68B8" stroke-width="2"/>
+  <text x="480" y="510" text-anchor="middle" class="state">GameOver</text>
+  <line x1="480" y1="526" x2="480" y2="548" stroke="#333" marker-end="url(#arrow)"/>
+  <text x="492" y="542" class="trans">房间销毁</text>
+  <circle cx="480" cy="564" r="10" fill="none" stroke="#222" stroke-width="2"/>
+  <circle cx="480" cy="564" r="4" fill="#222"/>
+
+  <!-- side note -->
+  <g transform="translate(24,92)">
+    <rect x="0" y="0" width="148" height="168" rx="6" fill="#FFF8DC" stroke="#E6C84A"/>
+    <text x="74" y="20" text-anchor="middle" class="note-title">终局摘要</text>
+    <text x="10" y="40" class="note-title">胜负：</text>
+    <text x="10" y="56" class="note-text">将死 / 困毙</text>
+    <text x="10" y="72" class="note-text">超时 / 认输</text>
+    <text x="10" y="88" class="note-text">断线 / 吃将</text>
+    <text x="10" y="112" class="note-title">和棋：</text>
+    <text x="10" y="128" class="note-text">40 回合无吃子</text>
+    <text x="10" y="144" class="note-text">长将长捉 ≥6</text>
+  </g>
+
+  <!-- detail section -->
+  <g transform="translate(40,600)">
+    <rect x="0" y="0" width="880" height="290" rx="8" fill="#FFF" stroke="#DDD"/>
+    <text x="440" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="#333">状态转换说明</text>
+    <line x1="20" y1="36" x2="860" y2="36" stroke="#EEE"/>
+    <text x="24" y="58" font-size="11" font-weight="700" fill="#444">Created → Waiting</text>
+    <text x="24" y="74" font-size="10.5" fill="#555">login / joinRoom，等待第二位玩家</text>
+    <text x="24" y="98" font-size="11" font-weight="700" fill="#444">Waiting → Playing</text>
+    <text x="24" y="114" font-size="10.5" fill="#555">双方 ready → gameStart，初始化棋盘与 65s 计时</text>
+    <text x="24" y="138" font-size="11" font-weight="700" fill="#444">Playing 循环</text>
+    <text x="24" y="154" font-size="10.5" fill="#555">moveRequest → 校验 → moveResult → 换方（EndgameJudge 未触发）</text>
+    <text x="24" y="178" font-size="11" font-weight="700" fill="#444">Playing → GameOver</text>
+    <text x="24" y="194" font-size="10.5" fill="#555">见上方 9 格触发条件；广播 gameOver，棋谱与 replay 落盘</text>
+    <text x="24" y="218" font-size="11" font-weight="700" fill="#444">GameOver → 销毁</text>
+    <text x="24" y="234" font-size="10.5" fill="#555">释放房间资源；客户端返回大厅或断开连接</text>
+    <rect x="460" y="50" width="400" height="220" rx="6" fill="#F8F8FF" stroke="#CCC"/>
+    <text x="660" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#333">协议消息映射</text>
+    <text x="476" y="96" font-size="10.5" fill="#555">login / joinRoom → Waiting</text>
+    <text x="476" y="116" font-size="10.5" fill="#555">ready → gameStart → Playing</text>
+    <text x="476" y="136" font-size="10.5" fill="#555">moveRequest / moveResult → 循环</text>
+    <text x="476" y="156" font-size="10.5" fill="#555">resign / timeout / disconnect → GameOver</text>
+    <text x="476" y="176" font-size="10.5" fill="#555">drawOffer / drawAccept → GameOver</text>
+    <text x="476" y="196" font-size="10.5" fill="#555">gameOver 广播 → 销毁</text>
+    <text x="476" y="224" font-size="10" fill="#888">黄色格：和棋类终局条件</text>
+  </g>
+</svg>

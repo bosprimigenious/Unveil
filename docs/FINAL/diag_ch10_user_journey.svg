@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 28 960 532" font-family="'Microsoft YaHei','SimHei',sans-serif">
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#475569"/></marker>
+    <linearGradient id="step" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F0FDF4"/><stop offset="100%" stop-color="#DCFCE7"/></linearGradient>
+  </defs>
+  <rect width="960" height="560" fill="#FAFAFA"/>
+
+  <!-- mode branch -->
+  <rect x="340" y="48" width="280" height="44" rx="22" fill="#E0F2FE" stroke="#38BDF8"/>
+  <text x="480" y="76" text-anchor="middle" font-size="13" font-weight="600" fill="#0C4A6E">登录 · 轻量身份（昵称 + 密码 + emoji）</text>
+
+  <line x1="480" y1="92" x2="480" y2="112" stroke="#475569" marker-end="url(#a)"/>
+  <text x="492" y="108" font-size="10" fill="#64748B">选择模式</text>
+
+  <rect x="60" y="118" width="180" height="52" rx="6" fill="#FFF" stroke="#4ADE80"/>
+  <text x="150" y="140" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">真人对战</text>
+  <text x="150" y="158" text-anchor="middle" font-size="9.5" fill="#15803D">匹配 / 房间号</text>
+
+  <rect x="270" y="118" width="180" height="52" rx="6" fill="#FFF" stroke="#38BDF8"/>
+  <text x="360" y="140" text-anchor="middle" font-size="11" font-weight="700" fill="#0369A1">人机对战</text>
+  <text x="360" y="158" text-anchor="middle" font-size="9.5" fill="#0284C7">Easy / Med / Hard</text>
+
+  <rect x="510" y="118" width="180" height="52" rx="6" fill="#FFF" stroke="#A78BFA"/>
+  <text x="600" y="140" text-anchor="middle" font-size="11" font-weight="700" fill="#5B21B6">AI 自动对弈</text>
+  <text x="600" y="158" text-anchor="middle" font-size="9.5" fill="#7C3AED">双 Bot 观战</text>
+
+  <rect x="720" y="118" width="180" height="52" rx="6" fill="#FFF" stroke="#FBBF24"/>
+  <text x="810" y="140" text-anchor="middle" font-size="11" font-weight="700" fill="#92400E">创建房间</text>
+  <text x="810" y="158" text-anchor="middle" font-size="9.5" fill="#B45309">指定双方联调</text>
+
+  <path d="M 150 170 L 150 200 L 480 200 L 480 218" fill="none" stroke="#475569" marker-end="url(#a)"/>
+  <path d="M 360 170 L 360 200" fill="none" stroke="#475569"/>
+  <path d="M 600 170 L 600 200" fill="none" stroke="#475569"/>
+  <path d="M 810 170 L 810 200 L 480 200" fill="none" stroke="#475569"/>
+
+  <!-- 10 steps timeline -->
+  <text x="40" y="238" font-size="13" font-weight="700" fill="#334155">主旅程 10 阶段（Web 端）</text>
+  <rect x="40" y="248" width="880" height="88" rx="8" fill="#FFF" stroke="#E2E8F0"/>
+
+  <g font-size="9.5" fill="#334155">
+    <rect x="52" y="262" width="76" height="56" rx="4" fill="url(#step)" stroke="#86EFAC"/>
+    <text x="90" y="280" text-anchor="middle" font-weight="700">1 登录</text>
+    <text x="90" y="296" text-anchor="middle" fill="#64748B">随机昵称</text>
+    <text x="90" y="310" text-anchor="middle" fill="#64748B">emoji 头像</text>
+
+    <line x1="128" y1="290" x2="138" y2="290" stroke="#94A3B8" marker-end="url(#a)"/>
+    <rect x="138" y="262" width="76" height="56" rx="4" fill="url(#step)" stroke="#86EFAC"/>
+    <text x="176" y="280" text-anchor="middle" font-weight="700">2 选模式</text>
+    <text x="176" y="296" text-anchor="middle" fill="#64748B">四入口</text>
+
+    <line x1="214" y1="290" x2="224" y2="290" stroke="#94A3B8" marker-end="url(#a)"/>
+    <rect x="224" y="262" width="76" height="56" rx="4" fill="url(#step)" stroke="#86EFAC"/>
+    <text x="262" y="280" text-anchor="middle" font-weight="700">3 难度</text>
+    <text x="262" y="296" text-anchor="middle" fill="#64748B">人机可选</text>
+
+    <line x1="300" y1="290" x2="310" y2="290" stroke="#94A3B8" marker-end="url(#a)"/>
+    <rect x="310" y="262" width="76" height="56" rx="4" fill="url(#step)" stroke="#86EFAC"/>
+    <text x="348" y="280" text-anchor="middle" font-weight="700">4 对弈</text>
+    <text x="348" y="296" text-anchor="middle" fill="#64748B">点击走子</text>
+
+    <line x1="386" y1="290" x2="396" y2="290" stroke="#94A3B8" marker-end="url(#a)"/>
+    <rect x="396" y="262" width="76" height="56" rx="4" fill="url(#step)" stroke="#86EFAC"/>
+    <text x="434" y="280" text-anchor="middle" font-weight="700">5 同步</text>
+    <text x="434" y="296" text-anchor="middle" fill="#64748B">WS 广播</text>
+
+    <line x1="472" y1="290" x2="482" y2="290" stroke="#94A3B8" marker-end="url(#a)"/>
+    <rect x="482" y="262" width="76" height="56" rx="4" fill="url(#step)" stroke="#86EFAC"/>
+    <text x="520" y="280" text-anchor="middle" font-weight="700">6 辅助</text>
+    <text x="520" y="296" text-anchor="middle" fill="#64748B">聊天/提和</text>
+
+    <line x1="558" y1="290" x2="568" y2="290" stroke="#94A3B8" marker-end="url(#a)"/>
+    <rect x="568" y="262" width="76" height="56" rx="4" fill="url(#step)" stroke="#86EFAC"/>
+    <text x="606" y="280" text-anchor="middle" font-weight="700">7 终局</text>
+    <text x="606" y="296" text-anchor="middle" fill="#64748B">胜负弹窗</text>
+
+    <line x1="644" y1="290" x2="654" y2="290" stroke="#94A3B8" marker-end="url(#a)"/>
+    <rect x="654" y="262" width="76" height="56" rx="4" fill="url(#step)" stroke="#86EFAC"/>
+    <text x="692" y="280" text-anchor="middle" font-weight="700">8 复盘</text>
+    <text x="692" y="296" text-anchor="middle" fill="#64748B">快照回放</text>
+
+    <line x1="730" y1="290" x2="740" y2="290" stroke="#94A3B8" marker-end="url(#a)"/>
+    <rect x="740" y="262" width="76" height="56" rx="4" fill="url(#step)" stroke="#86EFAC"/>
+    <text x="778" y="280" text-anchor="middle" font-weight="700">9 重赛</text>
+    <text x="778" y="296" text-anchor="middle" fill="#64748B">rematch</text>
+
+    <line x1="816" y1="290" x2="826" y2="290" stroke="#94A3B8" marker-end="url(#a)"/>
+    <rect x="826" y="262" width="76" height="56" rx="4" fill="url(#step)" stroke="#86EFAC"/>
+    <text x="864" y="280" text-anchor="middle" font-weight="700">10 离开</text>
+    <text x="864" y="296" text-anchor="middle" fill="#64748B">返回大厅</text>
+  </g>
+
+  <!-- path comparison -->
+  <text x="40" y="368" font-size="13" font-weight="700" fill="#334155">三条典型路径差异</text>
+  <rect x="40" y="378" width="880" height="155" rx="8" fill="#FFF" stroke="#E2E8F0"/>
+  <text x="60" y="402" font-size="10" font-weight="700" fill="#64748B">步骤</text>
+  <text x="200" y="402" font-size="10" font-weight="700" fill="#166534">真人对战</text>
+  <text x="420" y="402" font-size="10" font-weight="700" fill="#0369A1">人机对战</text>
+  <text x="640" y="402" font-size="10" font-weight="700" fill="#5B21B6">AI 自动对弈</text>
+  <line x1="50" y1="408" x2="910" y2="408" stroke="#EEE"/>
+  <text x="60" y="428" font-size="10" fill="#475569">匹配</text>
+  <text x="200" y="428" font-size="10" fill="#334155">需第二名玩家 / 房间号</text>
+  <text x="420" y="428" font-size="10" fill="#334155">startAiGame 单人开局</text>
+  <text x="640" y="428" font-size="10" fill="#334155">双 Bot 自动对战</text>
+  <text x="60" y="450" font-size="10" fill="#475569">准备</text>
+  <text x="200" y="450" font-size="10" fill="#334155">双方 Ready + first 协商</text>
+  <text x="420" y="450" font-size="10" fill="#334155">自动开局</text>
+  <text x="640" y="450" font-size="10" fill="#334155">自动开局</text>
+  <text x="60" y="472" font-size="10" fill="#475569">走子</text>
+  <text x="200" y="472" font-size="10" fill="#334155">轮流 · 65s 步时</text>
+  <text x="420" y="472" font-size="10" fill="#334155">用户走 → AI 应招</text>
+  <text x="640" y="472" font-size="10" fill="#334155">双 AI 循环 · 观战</text>
+  <text x="60" y="494" font-size="10" fill="#475569">复盘</text>
+  <text x="200" y="494" font-size="10" fill="#334155">replayFrame 逐步回看</text>
+  <text x="420" y="494" font-size="10" fill="#334155">同左</text>
+  <text x="640" y="494" font-size="10" fill="#334155">终局后可回看</text>
+  <text x="60" y="520" font-size="10" fill="#475569">价值</text>
+  <text x="200" y="520" font-size="10" fill="#64748B">展示网络同步与协议</text>
+  <text x="420" y="520" font-size="10" fill="#64748B">展示三档 AI 棋力</text>
+  <text x="640" y="520" font-size="10" fill="#64748B">展示系统稳定运行</text>
+</svg>
