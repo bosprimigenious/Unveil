@@ -22,7 +22,7 @@
   <text x="360" y="156" text-anchor="middle" font-size="9" fill="#64748B">集成测试 · verify</text>
 
   <rect x="480" y="68" width="200" height="100" rx="8" fill="#FFF" stroke="#4ADE80"/>
-  <text x="580" y="92" text-anchor="middle" font-size="12" font-weight="600" fill="#166534">秦艺博</text>
+  <text x="580" y="92" text-anchor="middle" font-size="12" font-weight="600" fill="#166534">陈艺博</text>
   <text x="580" y="112" text-anchor="middle" font-size="9.5" fill="#15803D">jieqi-web 前端</text>
   <text x="580" y="128" text-anchor="middle" font-size="9.5" fill="#15803D">Vue3 · Canvas 棋盘</text>
   <text x="580" y="156" text-anchor="middle" font-size="9" fill="#64748B">WS 协议联调 · 部署</text>

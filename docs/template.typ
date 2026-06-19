@@ -5,7 +5,7 @@
   project: "Unveil — 揭棋对弈程序",
   course: "揭棋对弈程序设计 · 北京邮电大学",
   team: "第一组",
-  members: ("张恒基（组长）", "秦博宇", "秦艺博", "陈雨飞"),
+  members: ("张恒基（组长）", "秦博宇", "陈艺博", "陈雨飞"),
 )
 
 #let page-footer = context [
@@ -117,7 +117,7 @@
             ],
             [
               #text(size: 13pt, weight: "bold")[陈雨飞] \
-              #text(size: 12pt, fill: rgb(100, 116, 139))[2024211301 / 2024210918]
+              #text(size: 12pt, fill: rgb(100, 116, 139))[2024211005]
             ],
           )
         ]

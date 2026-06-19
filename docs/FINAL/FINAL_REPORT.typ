@@ -3,7 +3,7 @@
 
 #set document(
   title: "揭棋对弈 — 最终报告（初版）",
-  author: ("张恒基", "秦博宇", "秦艺博", "陈雨飞"),
+  author: ("张恒基", "秦博宇", "陈艺博", "陈雨飞"),
   date: datetime(year: 2026, month: 6, day: 18),
 )
 
@@ -209,8 +209,8 @@
           align: center + horizon,
           [#nb[#text(size: 13pt, weight: "bold")[张恒基（组长）]]], [#nb[#text(size: 11pt, fill: rgb("#64748b"))[2024211301 / 2024210926]]],
           [#nb[#text(size: 13pt, weight: "bold")[秦博宇]]], [#nb[#text(size: 11pt, fill: rgb("#64748b"))[2024211302 / 2024210940]]],
-          [#nb[#text(size: 13pt, weight: "bold")[秦艺博]]], [#nb[#text(size: 11pt, fill: rgb("#64748b"))[2024211302 / 2024210931]]],
-          [#nb[#text(size: 13pt, weight: "bold")[陈雨飞]]], [#nb[#text(size: 11pt, fill: rgb("#64748b"))[2024211301 / 2024210918]]],
+          [#nb[#text(size: 13pt, weight: "bold")[陈艺博]]], [#nb[#text(size: 11pt, fill: rgb("#64748b"))[2024211302 / 2024210931]]],
+          [#nb[#text(size: 13pt, weight: "bold")[陈雨飞]]], [#nb[#text(size: 11pt, fill: rgb("#64748b"))[2024211005]]],
         )
       ]
     ]
@@ -2875,13 +2875,13 @@ Unveil 的差异化价值主要体现在五个方面：
     人机对战质量保障：主导 AI 模块与 Web 前端联调验证，逐项核对六大目标的实现情况，确保所有必选功能已落地且无遗漏；通过 AiFairnessTest 对三档 AI 分别构造随机局面，验证所有输出走法均通过 RuleValidator.isMoveLegal 且 Hard 档不透视对手暗子（createAiPublicView 脱敏）；利用 BoardUndoTest 在搜索迭代中校验 makeMove/undoMove 的棋盘一致性；在 Web 前端手工模拟难度选择、AI 思考、走子同步、超时处理、提和认输、吃子显示及终局揭晓的完整用户路径；运行 startAiBattle 双 AI 自动对弈并确保所有相关测试集成至 verify.ps1，最终达成 142 项全通过；
     服务端开发：参与 WsGameServer 房间管理、匹配队列（MatchmakingService）、GameRecord 持久化与集成测试。
   ],
-  [#nb[秦艺博]], [#nb[2024211302 / 2024210931]], [
+  [#nb[陈艺博]], [#nb[2024211302 / 2024210931]], [
     前端实现：使用 Vue 3、TypeScript、Vite、Pinia 搭建 jieqi-web 工程，完成登录页（随机昵称 + 预设头像）、大厅页（真人对战/人机对战/AI 对弈/房间对战四入口）、对局页（ChessBoard Canvas 10×9 棋盘渲染、暗子 `?` 显示、选中高亮、可走点提示）、被吃棋子展示区、局内聊天面板、人机难度选择与 AI 对弈入口等功能模块；
     WebSocket 协议联调：对接后端登录、匹配、房间、走子、终局、超时、聊天等全部 messageType，确保前端状态与服务器广播同步；
     Bug 修复：修复棋盘坐标映射错误、Canvas 事件冒泡冲突、线上 WebSocket 地址配置、AI 倒计时不同步、悔棋引发的状态残留等问题；
     部署维护：通过服务器 git pull 更新代码并重启前后端服务，保证项目可在线访问。
   ],
-  [#nb[陈雨飞]], [#nb[2024211301 / 2024210918]], [
+  [#nb[陈雨飞]], [#nb[2024211005]], [
     棋谱与复盘：参与 ReplayTimeline 数据模型设计，编写 ReplayFrame 防御性拷贝与帧编号逻辑的单测（时间线递增、拷贝隔离验证）；在 Web 前端实现复盘播放器 UI —— 步进控件（上一步/下一步/跳至开局/跳至终局）、replayBoard 渲染切换、3s 超时兜底提示、对局中脱敏/终局上帝视角（capturedReveal）切换；
     局内聊天：设计并实现 Web 端聊天面板 —— 快捷消息模板、3×5 共 15 种预设表情面板、自定义文本输入（≤ 120 字符校验）、消息归属显示（己方/对方 + 时间戳）、新消息提示音开关（chatSoundOn）；对控制台客户端 chat 命令进行同步适配；
     测试用例编写：编写 DarkPieceRuleTest（暗子走法边界 + 强化士象规则）、RuleEdgeCaseTest 部分子项（送将拦截、照面检测）；配合秦博宇完成 Web 端手工验收路径的回归测试；参与 verify.ps1 自检脚本的测试结果核对与文档同步。
@@ -3367,5 +3367,5 @@ cd jieqi-web && npm install && npm run dev
   #v(1em)
   #text(size: 12pt, fill: rgb("#475569"))[Unveil 揭棋对弈系统 — 最终报告（初版）]
   #v(0.3em)
-  #text(size: 10pt, fill: rgb("#94a3b8"))[第一组 · 张恒基 秦博宇 秦艺博 陈雨飞 · 2026-06-18]
+  #text(size: 10pt, fill: rgb("#94a3b8"))[第一组 · 张恒基 秦博宇 陈艺博 陈雨飞 · 2026-06-18]
 ]
