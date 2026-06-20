@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SUBMIT_DIR = ROOT / "submission"
-BASE_NAME = "2024211301-张恒基-2024210940-秦博宇-2024210931-陈艺博-2024211005-陈雨飞"
+BASE_NAME = "2024210926-张恒基-2024210940-秦博宇-2024210959-陈艺博-2024211005-陈雨飞"
 PDF_SRC = ROOT / "docs" / "FINAL" / "FINAL_REPORT.pdf"
 DOCX_OUT = SUBMIT_DIR / f"{BASE_NAME}.docx"
 RAR_OUT = SUBMIT_DIR / f"{BASE_NAME}.rar"

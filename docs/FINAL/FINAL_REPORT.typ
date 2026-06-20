@@ -209,7 +209,7 @@
           align: center + horizon,
           [#nb[#text(size: 13pt, weight: "bold")[张恒基（组长）]]], [#nb[#text(size: 11pt, fill: rgb("#64748b"))[2024211301 / 2024210926]]],
           [#nb[#text(size: 13pt, weight: "bold")[秦博宇]]], [#nb[#text(size: 11pt, fill: rgb("#64748b"))[2024211302 / 2024210940]]],
-          [#nb[#text(size: 13pt, weight: "bold")[陈艺博]]], [#nb[#text(size: 11pt, fill: rgb("#64748b"))[2024211302 / 2024210931]]],
+          [#nb[#text(size: 13pt, weight: "bold")[陈艺博]]], [#nb[#text(size: 11pt, fill: rgb("#64748b"))[2024211302 / 2024210959]]],
           [#nb[#text(size: 13pt, weight: "bold")[陈雨飞]]], [#nb[#text(size: 11pt, fill: rgb("#64748b"))[2024211005]]],
         )
       ]
@@ -2875,7 +2875,7 @@ Unveil 的差异化价值主要体现在五个方面：
     人机对战质量保障：主导 AI 模块与 Web 前端联调验证，逐项核对六大目标的实现情况，确保所有必选功能已落地且无遗漏；通过 AiFairnessTest 对三档 AI 分别构造随机局面，验证所有输出走法均通过 RuleValidator.isMoveLegal 且 Hard 档不透视对手暗子（createAiPublicView 脱敏）；利用 BoardUndoTest 在搜索迭代中校验 makeMove/undoMove 的棋盘一致性；在 Web 前端手工模拟难度选择、AI 思考、走子同步、超时处理、提和认输、吃子显示及终局揭晓的完整用户路径；运行 startAiBattle 双 AI 自动对弈并确保所有相关测试集成至 verify.ps1，最终达成 142 项全通过；
     服务端开发：参与 WsGameServer 房间管理、匹配队列（MatchmakingService）、GameRecord 持久化与集成测试。
   ],
-  [#nb[陈艺博]], [#nb[2024211302 / 2024210931]], [
+  [#nb[陈艺博]], [#nb[2024211302 / 2024210959]], [
     前端实现：使用 Vue 3、TypeScript、Vite、Pinia 搭建 jieqi-web 工程，完成登录页（随机昵称 + 预设头像）、大厅页（真人对战/人机对战/AI 对弈/房间对战四入口）、对局页（ChessBoard Canvas 10×9 棋盘渲染、暗子 `?` 显示、选中高亮、可走点提示）、被吃棋子展示区、局内聊天面板、人机难度选择与 AI 对弈入口等功能模块；
     WebSocket 协议联调：对接后端登录、匹配、房间、走子、终局、超时、聊天等全部 messageType，确保前端状态与服务器广播同步；
     Bug 修复：修复棋盘坐标映射错误、Canvas 事件冒泡冲突、线上 WebSocket 地址配置、AI 倒计时不同步、悔棋引发的状态残留等问题；

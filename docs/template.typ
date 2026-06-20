@@ -113,7 +113,7 @@
             ],
             [
               #text(size: 13pt, weight: "bold")[陈艺博] \
-              #text(size: 12pt, fill: rgb(100, 116, 139))[2024211302 / 2024210931]
+              #text(size: 12pt, fill: rgb(100, 116, 139))[2024211302 / 2024210959]
             ],
             [
               #text(size: 13pt, weight: "bold")[陈雨飞] \
