@@ -13,6 +13,8 @@ public class OptimizedAlphaBeta {
     private static final int REPETITION_DANGER = 5;
     private static final int REPETITION_PENALTY = 100_000;
     private static final int ASPIRATION_WINDOW = 80;
+    /** 迭代加深停搜：剩余时间低于「上一层耗时 × 此系数」时不再加深。 */
+    private static final double TIME_SAFETY_FACTOR = 1.5;
     private TranspositionTable tt;
     private HistoryHeuristic history;
     private KillerHeuristic killers;
@@ -58,7 +60,7 @@ public class OptimizedAlphaBeta {
         }
 
         Move bestMove = moves.get(0);
-        int bestScore = EnhancedEvaluator.evaluate(afterMove(board, bestMove), color);
+        int bestScore = evaluateAfterMove(board, bestMove, color);
         long hash = ZobristHash.computeHash(board);
         orderMoves(board, moves, color, ROOT_TACTICAL_ORDER_DEPTH, hash);
         Move ttBest = tt.getBestMove(hash);
@@ -93,7 +95,7 @@ public class OptimizedAlphaBeta {
                 lastDepthElapsed = System.currentTimeMillis() - depthStart;
                 long elapsed = System.currentTimeMillis() - startTime;
                 long remaining = timeLimit - elapsed;
-                if (depth >= 3 && remaining < lastDepthElapsed * 2) {
+                if (depth >= 3 && remaining * 10 < (long) (lastDepthElapsed * TIME_SAFETY_FACTOR * 10)) {
                     break;
                 }
             }
@@ -118,8 +120,9 @@ public class OptimizedAlphaBeta {
             int score;
             int oppColor = (color == ChessPiece.RED) ? ChessPiece.BLACK : ChessPiece.RED;
             boolean repetitionRisk = isRepeatedCheckRisk(board, oppColor, repetition);
-            if (RuleValidator.isCheckmate(board, oppColor)) score = INF - 1;
-            else {
+            if (isImmediateMate(board, oppColor)) {
+                score = INF - 1;
+            } else {
                 if (i == 0) score = -alphaBeta(board, oppColor, depth - 1, -beta, -alphaLocal, true);
                 else {
                     score = -alphaBeta(board, oppColor, depth - 1, -alphaLocal - 1, -alphaLocal, false);
@@ -199,7 +202,7 @@ public class OptimizedAlphaBeta {
                 bestScore = score; bestMove = move;
                 break;
             }
-            if (RuleValidator.isCheckmate(board, oppColor)) {
+            if (isImmediateMate(board, oppColor)) {
                 score = INF - 100;
                 board.undoMove(move, captured);
                 bestScore = score; bestMove = move;
@@ -344,14 +347,23 @@ public class OptimizedAlphaBeta {
         return type == ChessPiece.ROOK || type == ChessPiece.CANNON || type == ChessPiece.KNIGHT;
     }
 
-    private int terminalNoLegalMovesScore(Board board, int color) {
-        return RuleValidator.isInCheck(board, color) ? -INF + 1000 : -INF + 2000;
+    /** 对方被将且无合法应着 → 将杀。 */
+    private static boolean isImmediateMate(Board board, int color) {
+        if (!RuleValidator.isInCheck(board, color)) {
+            return false;
+        }
+        return RuleValidator.generateLegalMoves(board, color).isEmpty();
     }
 
-    private Board afterMove(Board board, Move move) {
-        Board next = new Board(board);
-        next.executeMove(move);
-        return next;
+    private int evaluateAfterMove(Board board, Move move, int color) {
+        ChessPiece captured = board.executeMove(move);
+        int score = EnhancedEvaluator.evaluate(board, color);
+        board.undoMove(move, captured);
+        return score;
+    }
+
+    private int terminalNoLegalMovesScore(Board board, int color) {
+        return RuleValidator.isInCheck(board, color) ? -INF + 1000 : -INF + 2000;
     }
 
     private void orderMoveToFront(List<Move> moves, Move best) {
