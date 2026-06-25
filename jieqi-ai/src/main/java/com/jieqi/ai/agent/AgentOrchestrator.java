@@ -18,6 +18,7 @@ public class AgentOrchestrator {
 
     public AgentOrchestrator() {
         agents = new ArrayList<>();
+        agents.add(new TacticalAgent());
         agents.add(new ProbabilityAgent());
         agents.add(new EndgameAgent());
         agents.add(new SearchAgent());

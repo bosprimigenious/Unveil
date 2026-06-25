@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 810" font-family="'Microsoft YaHei','SimHei',sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#333"/>
+    </marker>
+    <linearGradient id="layerGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF9E8"/>
+      <stop offset="100%" stop-color="#FFF3CC"/>
+    </linearGradient>
+    <linearGradient id="compGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F3EFFF"/>
+      <stop offset="100%" stop-color="#E8DEFF"/>
+    </linearGradient>
+    <style>
+      .title { font-size: 18px; font-weight: 700; fill: #222; }
+      .layer-title { font-size: 15px; font-weight: 700; fill: #333; }
+      .comp-name { font-size: 12.5px; font-weight: 600; fill: #222; }
+      .comp-pattern { font-size: 10.5px; fill: #555; }
+      .legend-chip { font-size: 10.5px; fill: #444; }
+      .arrow-label { font-size: 10px; fill: #555; }
+    </style>
+  </defs>
+  <rect width="1000" height="810" fill="#FAFAFA"/>
+  <text x="500" y="30" text-anchor="middle" class="title">四层架构设计模式总览</text>
+
+  <!-- horizontal legend -->
+  <g transform="translate(40,44)">
+    <rect x="0" y="0" width="920" height="34" rx="6" fill="#FFF" stroke="#CCC"/>
+    <text x="16" y="22" font-size="12" font-weight="700" fill="#333">模式图例</text>
+    <rect x="88" y="7" width="72" height="20" rx="10" fill="#F5F0FF" stroke="#C8B8E8"/>
+    <text x="124" y="21" text-anchor="middle" class="legend-chip">单例</text>
+    <rect x="168" y="7" width="72" height="20" rx="10" fill="#F5F0FF" stroke="#C8B8E8"/>
+    <text x="204" y="21" text-anchor="middle" class="legend-chip">工厂</text>
+    <rect x="248" y="7" width="72" height="20" rx="10" fill="#F5F0FF" stroke="#C8B8E8"/>
+    <text x="284" y="21" text-anchor="middle" class="legend-chip">策略</text>
+    <rect x="328" y="7" width="80" height="20" rx="10" fill="#F5F0FF" stroke="#C8B8E8"/>
+    <text x="368" y="21" text-anchor="middle" class="legend-chip">观察者</text>
+    <rect x="416" y="7" width="72" height="20" rx="10" fill="#F5F0FF" stroke="#C8B8E8"/>
+    <text x="452" y="21" text-anchor="middle" class="legend-chip">状态</text>
+    <rect x="496" y="7" width="72" height="20" rx="10" fill="#F5F0FF" stroke="#C8B8E8"/>
+    <text x="532" y="21" text-anchor="middle" class="legend-chip">命令</text>
+    <rect x="576" y="7" width="72" height="20" rx="10" fill="#F5F0FF" stroke="#C8B8E8"/>
+    <text x="612" y="21" text-anchor="middle" class="legend-chip">外观</text>
+    <rect x="656" y="7" width="88" height="20" rx="10" fill="#F5F0FF" stroke="#C8B8E8"/>
+    <text x="700" y="21" text-anchor="middle" class="legend-chip">纯虚构</text>
+  </g>
+
+  <!-- left: business + persistence -->
+  <g transform="translate(40,96)">
+    <rect x="0" y="0" width="460" height="350" rx="8" fill="url(#layerGrad)" stroke="#C9A227" stroke-width="1.5"/>
+    <text x="230" y="26" text-anchor="middle" class="layer-title">业务逻辑层</text>
+    <rect x="130" y="42" width="200" height="46" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="230" y="62" text-anchor="middle" class="comp-name">GameFacade</text>
+    <text x="230" y="78" text-anchor="middle" class="comp-pattern">外观模式 / 纯虚构</text>
+    <rect x="55" y="108" width="145" height="46" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="127" y="128" text-anchor="middle" class="comp-name">RoomManager</text>
+    <text x="127" y="144" text-anchor="middle" class="comp-pattern">单例模式</text>
+    <rect x="260" y="108" width="145" height="46" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="332" y="128" text-anchor="middle" class="comp-name">Game</text>
+    <text x="332" y="144" text-anchor="middle" class="comp-pattern">状态 / 观察者</text>
+    <line x1="230" y1="88" x2="127" y2="108" stroke="#333"/>
+    <line x1="230" y1="88" x2="332" y2="108" stroke="#333"/>
+    <rect x="70" y="178" width="130" height="42" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="135" y="204" text-anchor="middle" class="comp-name">ChessBoard</text>
+    <rect x="260" y="178" width="130" height="42" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="325" y="196" text-anchor="middle" class="comp-name">IAIStrategy</text>
+    <text x="325" y="212" text-anchor="middle" class="comp-pattern">策略模式</text>
+    <line x1="332" y1="154" x2="135" y2="178" stroke="#333"/>
+    <line x1="332" y1="154" x2="325" y2="178" stroke="#333"/>
+    <rect x="85" y="242" width="120" height="42" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="145" y="260" text-anchor="middle" class="comp-name">ChessPiece</text>
+    <text x="145" y="276" text-anchor="middle" class="comp-pattern">工厂模式</text>
+    <line x1="135" y1="220" x2="145" y2="242" stroke="#333"/>
+    <line x1="230" y1="330" x2="230" y2="372" stroke="#333" marker-end="url(#arrow)"/>
+    <text x="242" y="356" class="arrow-label">记录走子</text>
+  </g>
+
+  <path d="M 270 446 L 270 468" fill="none" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <g transform="translate(40,468)">
+    <rect x="0" y="0" width="460" height="185" rx="8" fill="url(#layerGrad)" stroke="#C9A227" stroke-width="1.5"/>
+    <text x="230" y="26" text-anchor="middle" class="layer-title">数据持久层</text>
+    <rect x="155" y="40" width="150" height="42" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="230" y="58" text-anchor="middle" class="comp-name">ICommand</text>
+    <text x="230" y="74" text-anchor="middle" class="comp-pattern">命令模式</text>
+    <line x1="230" y1="82" x2="230" y2="96" stroke="#333" marker-end="url(#arrow)"/>
+    <rect x="155" y="96" width="150" height="36" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="230" y="118" text-anchor="middle" class="comp-name">MoveCommand</text>
+    <line x1="230" y1="132" x2="230" y2="148" stroke="#333" marker-end="url(#arrow)"/>
+    <!-- database cylinder -->
+    <ellipse cx="230" cy="158" rx="58" ry="10" fill="#D4E8FF" stroke="#5A8FBD"/>
+    <rect x="172" y="148" width="116" height="22" fill="#D4E8FF" stroke="none"/>
+    <ellipse cx="230" cy="148" rx="58" ry="10" fill="#E8F4FF" stroke="#5A8FBD"/>
+    <ellipse cx="230" cy="170" rx="58" ry="10" fill="#D4E8FF" stroke="#5A8FBD"/>
+    <text x="230" y="164" text-anchor="middle" font-size="12" font-weight="600" fill="#333">棋谱记录</text>
+  </g>
+
+  <!-- right: comm + message -->
+  <g transform="translate(520,96)">
+    <rect x="0" y="0" width="440" height="108" rx="8" fill="url(#layerGrad)" stroke="#C9A227" stroke-width="1.5"/>
+    <text x="220" y="26" text-anchor="middle" class="layer-title">通信层</text>
+    <rect x="28" y="42" width="175" height="50" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="115" y="62" text-anchor="middle" class="comp-name">JieqiWebSocketServer</text>
+    <text x="115" y="80" text-anchor="middle" class="comp-pattern">单例模式</text>
+    <rect x="237" y="42" width="175" height="50" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="324" y="62" text-anchor="middle" class="comp-name">WebSocketService</text>
+    <text x="324" y="80" text-anchor="middle" class="comp-pattern">外观模式</text>
+    <line x1="220" y1="108" x2="220" y2="128" stroke="#333" marker-end="url(#arrow)"/>
+  </g>
+
+  <g transform="translate(520,228)">
+    <rect x="0" y="0" width="440" height="150" rx="8" fill="url(#layerGrad)" stroke="#C9A227" stroke-width="1.5"/>
+    <text x="220" y="26" text-anchor="middle" class="layer-title">消息处理层</text>
+    <rect x="120" y="38" width="200" height="46" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="220" y="58" text-anchor="middle" class="comp-name">MessageHandlerFactory</text>
+    <text x="220" y="74" text-anchor="middle" class="comp-pattern">工厂模式</text>
+    <rect x="28" y="102" width="118" height="36" rx="4" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="87" y="125" text-anchor="middle" class="comp-name">LoginHandler</text>
+    <rect x="161" y="102" width="118" height="36" rx="4" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="220" y="125" text-anchor="middle" class="comp-name">MoveHandler</text>
+    <rect x="294" y="102" width="118" height="36" rx="4" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="353" y="125" text-anchor="middle" class="comp-name">ChatHandler</text>
+    <line x1="220" y1="84" x2="87" y2="102" stroke="#333"/>
+    <line x1="220" y1="84" x2="220" y2="102" stroke="#333"/>
+    <line x1="220" y1="84" x2="353" y2="102" stroke="#333"/>
+    <line x1="120" y1="150" x2="120" y2="170" stroke="#333" marker-end="url(#arrow)"/>
+    <text x="132" y="166" class="arrow-label">路由消息</text>
+  </g>
+
+  <path d="M 520 298 L 500 298 L 500 210 L 350 210" fill="none" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)"/>
+</svg>

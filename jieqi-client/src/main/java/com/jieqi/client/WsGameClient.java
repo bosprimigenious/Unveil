@@ -44,6 +44,7 @@ public class WsGameClient extends WebSocketClient {
     private boolean inGame;
     private boolean postGameMode;
     private boolean replayMenuMode;
+    private boolean watchMode;
     private int replayIndex = 0;
     private int replayTotal = 0;
     private int gameMoveCount;
@@ -60,28 +61,29 @@ public class WsGameClient extends WebSocketClient {
     }
 
     public void startInteractive() throws Exception {
+        connectAndLogin();
+        printCommandHelp(false);
+        commandLoop();
+    }
+
+    /** 观战模式：登录后输入房间号，只读观看对局。 */
+    public void startWatchInteractive() throws Exception {
+        connectAndLogin();
+        watchMode = true;
+        printCommandHelp(true);
+        if (!promptWatchRoom()) {
+            return;
+        }
+        commandLoop();
+    }
+
+    private void connectAndLogin() throws Exception {
         connectBlocking(5, TimeUnit.SECONDS);
         sendJson(loginMessage());
         loginLatch.await(5, TimeUnit.SECONDS);
+    }
 
-        System.out.println("""
-                命令:
-                  match                          开始匹配
-                  ready                          准备就绪
-                  first <true|false>             请求先手（10s 窗口内）
-                  move <fx> <fy> <tx> <ty>  走子（例: move a 6 a 5）
-                  resign | ping | board | quit
-                  replay              查看最后一步复盘
-                  replay <step>       查看指定步（0=开局）
-                  replay-next | rn    复盘下一步
-                  replay-prev | rp    复盘上一步
-                  rematch             再来一局
-                  watch <roomId>      观战（本组扩展）
-                  stats               当前局面统计
-                  moves | record      查看棋谱
-                  ai easy|medium|hard 发起人机对弈
-                坐标: 列 a-i，行 0-9（0=红方底线，9=黑方底线）
-                """);
+    private void commandLoop() throws Exception {
         while (running && isOpen()) {
             System.out.print("\n> ");
             String line = console.readLine();
@@ -90,6 +92,10 @@ public class WsGameClient extends WebSocketClient {
             }
             line = line.trim();
             if (line.isEmpty()) {
+                continue;
+            }
+            if (watchMode && inGame && !postGameMode && !replayMenuMode && !isAllowedWhileWatching(line)) {
+                System.out.println("观战模式仅支持: board / stats / moves / watch / quit");
                 continue;
             }
             if (line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit")) {
@@ -156,13 +162,14 @@ public class WsGameClient extends WebSocketClient {
                 printMoveRecord();
                 continue;
             }
+            if (line.equalsIgnoreCase("watch")) {
+                if (!promptWatchRoom()) {
+                    continue;
+                }
+                continue;
+            }
             if (line.startsWith("watch ")) {
-                String watchRoom = line.substring(6).trim();
-                JsonObject w = new JsonObject();
-                w.addProperty("messageType", JsonMessageTypes.WATCH);
-                w.addProperty("roomId", watchRoom);
-                sendJson(w);
-                System.out.println("[WS Client] 观战请求已发送 room=" + watchRoom);
+                sendWatchRequest(line.substring(6).trim());
                 continue;
             }
             if (line.equalsIgnoreCase("replay")) {
@@ -218,6 +225,83 @@ public class WsGameClient extends WebSocketClient {
             }
             System.out.println("未知命令");
         }
+    }
+
+    private void printCommandHelp(boolean watch) {
+        if (watch) {
+            System.out.println("""
+                    ===== 观战模式 =====
+                    命令:
+                      board | b              显示棋盘
+                      stats                  局面统计
+                      moves | record         查看棋谱
+                      watch                  输入新房间号观战
+                      watch <roomId>         观战指定房间
+                      quit                   退出
+                    坐标: 列 a-i，行 0-9（0=红方底线，9=黑方底线）
+                    """);
+            return;
+        }
+        System.out.println("""
+                命令:
+                  match                          开始匹配
+                  ready                          准备就绪
+                  first <true|false>             请求先手（10s 窗口内）
+                  move <fx> <fy> <tx> <ty>  走子（例: move a 6 a 5）
+                  resign | ping | board | quit
+                  watch                          输入房间号观战
+                  watch <roomId>                 观战指定房间
+                  replay              查看最后一步复盘
+                  replay <step>       查看指定步（0=开局）
+                  replay-next | rn    复盘下一步
+                  replay-prev | rp    复盘上一步
+                  rematch             再来一局
+                  stats               当前局面统计
+                  moves | record      查看棋谱
+                  ai easy|medium|hard 发起人机对弈
+                坐标: 列 a-i，行 0-9（0=红方底线，9=黑方底线）
+                """);
+    }
+
+    private boolean promptWatchRoom() throws Exception {
+        System.out.print("请输入房间号: ");
+        String room = console.readLine();
+        if (room == null) {
+            return false;
+        }
+        room = room.trim();
+        if (room.isEmpty()) {
+            System.out.println("房间号不能为空");
+            return false;
+        }
+        sendWatchRequest(room);
+        return true;
+    }
+
+    private void sendWatchRequest(String watchRoom) {
+        if (watchRoom.isEmpty()) {
+            System.out.println("房间号不能为空");
+            return;
+        }
+        watchMode = true;
+        JsonObject w = new JsonObject();
+        w.addProperty("messageType", JsonMessageTypes.WATCH);
+        w.addProperty("roomId", watchRoom);
+        sendJson(w);
+        System.out.println("[WS Client] 观战请求已发送 room=" + watchRoom);
+    }
+
+    private boolean isAllowedWhileWatching(String line) {
+        String lower = line.toLowerCase();
+        return lower.equals("board") || lower.equals("b")
+                || lower.equals("stats")
+                || lower.equals("moves") || lower.equals("record")
+                || lower.equals("watch") || lower.startsWith("watch ")
+                || lower.equals("quit") || lower.equals("exit")
+                || lower.equals("replay") || lower.startsWith("replay ")
+                || lower.equals("replay-next") || lower.equals("rn")
+                || lower.equals("replay-prev") || lower.equals("rp")
+                || lower.equals("ping");
     }
 
     private void handleMoveCommand(String args) {
@@ -303,11 +387,19 @@ public class WsGameClient extends WebSocketClient {
         blackPlayerId = json.get("blackPlayerId").getAsString();
         JsonArray cells = json.getAsJsonArray("initialBoard");
         board = BoardJsonMapper.fromInitialBoard(cells);
-        System.out.println("[WS Client] 开局 yourColor=" + json.get("yourColor").getAsString()
-                + " firstHand=" + firstHand
-                + " 红方=" + redPlayerId
-                + " 黑方=" + blackPlayerId
-                + (opponentNickname != null ? " 对手昵称=" + opponentNickname : ""));
+        if (watchMode) {
+            System.out.println("\n===== 观战已开始 =====");
+            System.out.println("房间号 " + (roomId != null ? roomId : "—"));
+            System.out.println("红方   " + redPlayerId);
+            System.out.println("黑方   " + blackPlayerId);
+            System.out.println("（只读观战，不可走子）");
+        } else {
+            System.out.println("[WS Client] 开局 yourColor=" + json.get("yourColor").getAsString()
+                    + " firstHand=" + firstHand
+                    + " 红方=" + redPlayerId
+                    + " 黑方=" + blackPlayerId
+                    + (opponentNickname != null ? " 对手昵称=" + opponentNickname : ""));
+        }
         if (selectedAiLevel != null) {
             printAiLevelBanner(selectedAiLevel);
         }
@@ -348,9 +440,15 @@ public class WsGameClient extends WebSocketClient {
             System.out.println("复盘已保存：" + replayPath);
         }
         System.out.println("\n可选操作：");
-        System.out.println("replay   查看复盘");
-        System.out.println("rematch  再来一局");
-        System.out.println("quit     退出");
+        if (watchMode) {
+            System.out.println("replay   查看复盘");
+            System.out.println("watch    观战其他房间");
+            System.out.println("quit     退出");
+        } else {
+            System.out.println("replay   查看复盘");
+            System.out.println("rematch  再来一局");
+            System.out.println("quit     退出");
+        }
     }
 
     private void printCapturedReveal(JsonArray captured) {
@@ -388,7 +486,15 @@ public class WsGameClient extends WebSocketClient {
             enterReplayMenu();
             return true;
         }
-        if (line.equalsIgnoreCase("rematch")) {
+        if (watchMode && line.equalsIgnoreCase("watch")) {
+            try {
+                return promptWatchRoom();
+            } catch (Exception e) {
+                System.out.println("观战失败: " + e.getMessage());
+                return true;
+            }
+        }
+        if (!watchMode && line.equalsIgnoreCase("rematch")) {
             JsonObject rm = new JsonObject();
             rm.addProperty("messageType", JsonMessageTypes.REMATCH_REQUEST);
             sendJson(rm);
@@ -398,7 +504,7 @@ public class WsGameClient extends WebSocketClient {
         if (line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit")) {
             return false;
         }
-        System.out.println("终局菜单：replay / rematch / quit");
+        System.out.println(watchMode ? "终局菜单：replay / watch / quit" : "终局菜单：replay / rematch / quit");
         return true;
     }
 

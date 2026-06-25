@@ -31,6 +31,7 @@ public class Main {
         System.out.println("--- WebSocket + JSON（推荐，老师协议 8887）---");
         System.out.println("3. 启动 WebSocket 服务器");
         System.out.println("4. 启动 WebSocket 客户端");
+        System.out.println("10. 观战模式（输入房间号）");
         System.out.println("9. AI 经 WebSocket 自动对弈");
         System.out.println("--- TCP 附录 B（可选调试 8888）---");
         System.out.println("1. 启动 TCP 服务器");
@@ -40,7 +41,7 @@ public class Main {
         System.out.println("6. 人 vs AI 对弈（本地）");
         System.out.println("7. AI 性能测试");
         System.out.println("8. 本地测试模式");
-        System.out.print("请选择 (1-9): ");
+        System.out.print("请选择 (1-10): ");
         int choice = scanner.nextInt();
         scanner.nextLine();
         switch (choice) {
@@ -48,6 +49,7 @@ public class Main {
             case 2 -> startClient(scanner);
             case 3 -> startWsServer(scanner);
             case 4 -> startWsClient(scanner);
+            case 10 -> startWsWatch(scanner);
             case 5 -> AIVsAIEnhanced.runMatch(4, 5000);
             case 6 -> playVsAI(scanner);
             case 7 -> PerformanceTest.main(new String[]{});
@@ -94,7 +96,17 @@ public class Main {
                     System.err.println("ai-ws 失败: " + e.getMessage());
                 }
             }
-            default -> System.out.println("用法: Main [server|client|server-ws|client-ws|ai-ws] ...");
+            case "client-ws-watch" -> {
+                try {
+                    String url = args.length > 1 ? args[1] : "ws://127.0.0.1:8887";
+                    String user = args.length > 2 ? args[2] : "spectator1";
+                    String pass = args.length > 3 ? args[3] : "123456";
+                    new com.jieqi.client.WsGameClient(java.net.URI.create(url), user, pass).startWatchInteractive();
+                } catch (Exception e) {
+                    System.err.println("client-ws-watch 失败: " + e.getMessage());
+                }
+            }
+            default -> System.out.println("用法: Main [server|client|server-ws|client-ws|client-ws-watch|ai-ws] ...");
         }
     }
 
@@ -263,6 +275,21 @@ public class Main {
         String portStr = scanner.nextLine();
         int port = portStr.isEmpty() ? 8887 : Integer.parseInt(portStr);
         new com.jieqi.server.ws.WsGameServer(port).start();
+    }
+
+    private static void startWsWatch(Scanner scanner) {
+        System.out.print("WebSocket URL (默认 ws://127.0.0.1:8887): ");
+        String url = scanner.nextLine();
+        url = url.isEmpty() ? "ws://127.0.0.1:8887" : url;
+        System.out.print("userId: ");
+        String userId = scanner.nextLine();
+        System.out.print("password: ");
+        String password = scanner.nextLine();
+        try {
+            new com.jieqi.client.WsGameClient(java.net.URI.create(url), userId, password).startWatchInteractive();
+        } catch (Exception e) {
+            System.err.println("观战客户端错误: " + e.getMessage());
+        }
     }
 
     private static void startWsClient(Scanner scanner) {

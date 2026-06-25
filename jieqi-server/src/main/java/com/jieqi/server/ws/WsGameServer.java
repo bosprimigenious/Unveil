@@ -637,8 +637,12 @@ public class WsGameServer extends WebSocketServer {
         Game game = room.game();
         if (game.getStatus() == Game.GameStatus.PLAYING) {
             if (room.isObserver(ctx)) {
-                game.setStatus(Game.GameStatus.DRAW);
-                rooms.remove(room.roomId());
+                if (room.isAiBattle()) {
+                    game.setStatus(Game.GameStatus.DRAW);
+                    rooms.remove(room.roomId());
+                } else {
+                    room.detachObserver(ctx);
+                }
                 ctx.setRoomId(null);
                 return;
             }

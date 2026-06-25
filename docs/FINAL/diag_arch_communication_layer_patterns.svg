@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 915" font-family="'Microsoft YaHei','SimHei',sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#333"/>
+    </marker>
+    <linearGradient id="layerGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF9E8"/>
+      <stop offset="100%" stop-color="#FFF3CC"/>
+    </linearGradient>
+    <linearGradient id="compGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F3EFFF"/>
+      <stop offset="100%" stop-color="#E8DEFF"/>
+    </linearGradient>
+    <style>
+      .title { font-size: 18px; font-weight: 700; fill: #222; }
+      .layer-title { font-size: 15px; font-weight: 700; fill: #333; }
+      .comp-name { font-size: 13px; font-weight: 600; fill: #222; }
+      .comp-pattern { font-size: 11px; fill: #555; }
+      .flow-label { font-size: 11px; fill: #666; font-style: italic; }
+      .legend { font-size: 11px; fill: #444; }
+    </style>
+  </defs>
+  <rect width="820" height="915" fill="#FAFAFA"/>
+  <text x="410" y="32" text-anchor="middle" class="title">通信层设计模式 — 纵向调用链</text>
+  <g transform="translate(40,48)">
+    <rect x="0" y="0" width="740" height="36" rx="6" fill="#FFF" stroke="#DDD"/>
+    <text x="20" y="23" class="legend">策略</text>
+    <text x="90" y="23" class="legend">单例</text>
+    <text x="160" y="23" class="legend">命令</text>
+    <text x="230" y="23" class="legend">外观</text>
+    <text x="300" y="23" class="legend">工厂</text>
+    <text x="370" y="23" class="legend">纯虚构</text>
+    <text x="450" y="23" class="legend">观察者</text>
+    <text x="530" y="23" class="legend">状态</text>
+    <text x="600" y="23" class="legend" fill="#888">设计模式标注</text>
+  </g>
+  <g transform="translate(60,105)">
+    <rect x="0" y="0" width="700" height="120" rx="8" fill="url(#layerGrad)" stroke="#C9A227" stroke-width="1.5"/>
+    <text x="350" y="26" text-anchor="middle" class="layer-title">① 通信层 — 网络接入与高并发连接</text>
+    <rect x="80" y="48" width="220" height="52" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="190" y="70" text-anchor="middle" class="comp-name">JieqiWebSocketServer</text>
+    <text x="190" y="88" text-anchor="middle" class="comp-pattern">单例模式 · 唯一服务实例</text>
+    <rect x="400" y="48" width="220" height="52" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="510" y="70" text-anchor="middle" class="comp-name">WebSocketService</text>
+    <text x="510" y="88" text-anchor="middle" class="comp-pattern">外观模式 · 统一连接入口</text>
+    <line x1="300" y1="74" x2="400" y2="74" stroke="#333" marker-end="url(#arrow)"/>
+    <line x1="350" y1="120" x2="350" y2="145" stroke="#333" marker-end="url(#arrow)"/>
+    <text x="365" y="138" class="flow-label">JSON 帧到达</text>
+  </g>
+  <g transform="translate(60,260)">
+    <rect x="0" y="0" width="700" height="155" rx="8" fill="url(#layerGrad)" stroke="#C9A227" stroke-width="1.5"/>
+    <text x="350" y="26" text-anchor="middle" class="layer-title">② 消息处理层 — 按 messageType 分发</text>
+    <rect x="250" y="42" width="200" height="48" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="350" y="62" text-anchor="middle" class="comp-name">MessageHandlerFactory</text>
+    <text x="350" y="80" text-anchor="middle" class="comp-pattern">工厂模式</text>
+    <rect x="60" y="108" width="170" height="38" rx="4" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="145" y="132" text-anchor="middle" class="comp-name">LoginHandler</text>
+    <rect x="265" y="108" width="170" height="38" rx="4" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="350" y="132" text-anchor="middle" class="comp-name">MoveHandler</text>
+    <rect x="470" y="108" width="170" height="38" rx="4" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="555" y="132" text-anchor="middle" class="comp-name">ChatHandler</text>
+    <line x1="350" y1="90" x2="145" y2="108" stroke="#333"/>
+    <line x1="350" y1="90" x2="350" y2="108" stroke="#333"/>
+    <line x1="350" y1="90" x2="555" y2="108" stroke="#333"/>
+    <line x1="350" y1="155" x2="350" y2="180" stroke="#333" marker-end="url(#arrow)"/>
+    <text x="365" y="173" class="flow-label">委托业务</text>
+  </g>
+  <g transform="translate(60,450)">
+    <rect x="0" y="0" width="700" height="250" rx="8" fill="url(#layerGrad)" stroke="#C9A227" stroke-width="1.5"/>
+    <text x="350" y="26" text-anchor="middle" class="layer-title">③ 业务逻辑层 — 房间 / 对局 / 规则 / AI</text>
+    <rect x="250" y="40" width="200" height="48" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="350" y="60" text-anchor="middle" class="comp-name">GameFacade</text>
+    <text x="350" y="78" text-anchor="middle" class="comp-pattern">外观模式 / 纯虚构</text>
+    <rect x="80" y="108" width="170" height="48" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="165" y="128" text-anchor="middle" class="comp-name">RoomManager</text>
+    <text x="165" y="146" text-anchor="middle" class="comp-pattern">单例模式</text>
+    <rect x="450" y="108" width="170" height="48" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="535" y="128" text-anchor="middle" class="comp-name">Game</text>
+    <text x="535" y="146" text-anchor="middle" class="comp-pattern">状态模式 / 观察者模式</text>
+    <line x1="350" y1="88" x2="165" y2="108" stroke="#333"/>
+    <line x1="350" y1="88" x2="535" y2="108" stroke="#333"/>
+    <rect x="120" y="178" width="150" height="44" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="195" y="205" text-anchor="middle" class="comp-name">ChessBoard</text>
+    <rect x="430" y="178" width="150" height="44" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="505" y="198" text-anchor="middle" class="comp-name">IAIStrategy</text>
+    <text x="505" y="214" text-anchor="middle" class="comp-pattern">策略模式</text>
+    <rect x="120" y="232" width="150" height="44" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="195" y="252" text-anchor="middle" class="comp-name">ChessPiece</text>
+    <text x="195" y="268" text-anchor="middle" class="comp-pattern">工厂模式</text>
+    <line x1="535" y1="156" x2="195" y2="178" stroke="#333"/>
+    <line x1="535" y1="156" x2="505" y2="178" stroke="#333"/>
+    <line x1="195" y1="222" x2="195" y2="232" stroke="#333"/>
+    <line x1="350" y1="250" x2="350" y2="275" stroke="#333" marker-end="url(#arrow)"/>
+    <text x="365" y="268" class="flow-label">落盘棋谱</text>
+  </g>
+  <g transform="translate(60,735)">
+    <rect x="0" y="0" width="700" height="155" rx="8" fill="url(#layerGrad)" stroke="#C9A227" stroke-width="1.5"/>
+    <text x="350" y="26" text-anchor="middle" class="layer-title">④ 数据持久层 — 走子命令与棋谱存储</text>
+    <rect x="275" y="40" width="150" height="42" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="350" y="58" text-anchor="middle" class="comp-name">ICommand</text>
+    <text x="350" y="74" text-anchor="middle" class="comp-pattern">命令模式</text>
+    <line x1="350" y1="82" x2="350" y2="92" stroke="#333" marker-end="url(#arrow)"/>
+    <rect x="275" y="92" width="150" height="34" rx="5" fill="url(#compGrad)" stroke="#7B68B8"/>
+    <text x="350" y="113" text-anchor="middle" class="comp-name">MoveCommand</text>
+    <line x1="350" y1="126" x2="350" y2="136" stroke="#333" marker-end="url(#arrow)"/>
+    <ellipse cx="350" cy="146" rx="52" ry="9" fill="#D4E8FF" stroke="#5A8FBD"/>
+    <rect x="298" y="136" width="104" height="18" fill="#D4E8FF" stroke="none"/>
+    <ellipse cx="350" cy="136" rx="52" ry="9" fill="#E8F4FF" stroke="#5A8FBD"/>
+    <ellipse cx="350" cy="154" rx="52" ry="9" fill="#D4E8FF" stroke="#5A8FBD"/>
+    <text x="350" y="151" text-anchor="middle" font-size="12" font-weight="600" fill="#333">棋谱记录</text>
+  </g>
+</svg>
