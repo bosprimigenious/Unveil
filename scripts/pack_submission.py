@@ -14,7 +14,6 @@ STAGE_DIR = SUBMIT_DIR / "stage"
 DOCX_PATH = SUBMIT_DIR / f"{BASE_NAME}.docx"
 RAR_PATH = SUBMIT_DIR / f"{BASE_NAME}.rar"
 PDF_PATH = ROOT / "docs" / "FINAL" / "FINAL_REPORT.pdf"
-RAR_EXE = Path(r"C:\Program Files\WinRAR\Rar.exe")
 
 EXCLUDE_DIRS = {
     "target",
@@ -98,14 +97,30 @@ def stage_sources() -> None:
             shutil.copy2(item, dest)
 
 
+def find_rar_exe() -> Path | None:
+    candidates = [
+        Path(r"C:\Program Files\WinRAR\Rar.exe"),
+        Path(r"C:\Program Files (x86)\WinRAR\Rar.exe"),
+    ]
+    for path in candidates:
+        if path.is_file():
+            return path
+    for name in ("Rar.exe", "rar.exe"):
+        found = shutil.which(name)
+        if found:
+            return Path(found)
+    return None
+
+
 def create_rar() -> None:
-    if not RAR_EXE.is_file():
-        raise FileNotFoundError(f"WinRAR not found: {RAR_EXE}")
+    rar_exe = find_rar_exe()
+    if rar_exe is None:
+        raise FileNotFoundError("WinRAR not found; install WinRAR or add Rar.exe to PATH")
     if RAR_PATH.exists():
         RAR_PATH.unlink()
     print(f"Creating {RAR_PATH.name} ...")
     subprocess.run(
-        [str(RAR_EXE), "a", "-r", "-ep1", str(RAR_PATH), "*"],
+        [str(rar_exe), "a", "-r", "-ep1", str(RAR_PATH), "*"],
         cwd=STAGE_DIR,
         check=True,
     )
@@ -116,11 +131,12 @@ def use_docx(src: Path) -> None:
     if not src.is_file():
         raise FileNotFoundError(f"DOCX not found: {src}")
     SUBMIT_DIR.mkdir(parents=True, exist_ok=True)
-    if src.resolve() == DOCX_PATH.resolve():
+    src = src.resolve()
+    if src != DOCX_PATH.resolve():
+        shutil.copy2(src, DOCX_PATH)
+        print(f"Using DOCX: {src.name} -> {DOCX_PATH.name}")
+    else:
         print(f"Using DOCX: {DOCX_PATH.name}")
-        return
-    shutil.copy2(src, DOCX_PATH)
-    print(f"Using DOCX: {src.name} -> {DOCX_PATH.name}")
 
 
 def main() -> int:
